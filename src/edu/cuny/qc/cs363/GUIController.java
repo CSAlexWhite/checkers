@@ -1,4 +1,4 @@
-package edu.cuny.qc.cs316;
+package edu.cuny.qc.cs363;
 
 public class GUIController {
 	
