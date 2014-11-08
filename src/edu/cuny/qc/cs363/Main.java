@@ -97,14 +97,14 @@ public class Main extends Application {
 		/* 29 */{25,26,-1},
 		/* 30 */{26,27,-1},
 		/* 31 */{27,-1}};			
-	}
+	
 	
 	// MARGINAL CASES FOR THE BOARD (CAN ONLY MOVE RIGHT OR LEFT)
 	static final int[] LEFTIES = new int[]{0,8,16,24};	
 	static final int[] RIGHTIES = new int[]{7,15,23,31};
 	
-	static final int[][] START_BOARD = new int[][]{
+	//static final int[][] START_BOARD = new int[][]{
 		
-				
+	}			
 	
 }

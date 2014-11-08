@@ -2,8 +2,9 @@ package edu.cuny.qc.cs363;
 
 import java.util.ArrayList;
 import java.util.Stack;
+import java.util.Vector;
 
-public class CheckerBoard {
+public class CheckerBoard { 
 	
 	int[][] normal;
 	int[][] king;
@@ -40,7 +41,7 @@ public class CheckerBoard {
 		//return 
 	}
 	
-	public int possibleMoves(){
+	public Vector<CheckerMove> possibleMoves(){
 		
 		Stack<CheckerMove> moves = new Stack<CheckerMove>();
 		CheckerPiece target = null;
@@ -53,11 +54,18 @@ public class CheckerBoard {
 				if(!board.get(i).king){		 // AND THE PIECE ISN'T A KING
 					
 					int j=0;
-					while(normal[i][j] != -1){  // LOOK AT THE NORMAL ADJACENCY LIST
-						target = board.get(normal[i][j]);
+					while(normal[i][j] != -1){  			// LOOK AT THE NORMAL ADJACENCY LIST
+						target = board.get(normal[i][j]);	// LOOK AT AN AVAILABLE MOVE
 						
-												// IF THE POTENTIAL SPACE HAS A RED PIECE
-												// LOOK ON THE OTHER SIDE OF IT
+						if(target.empty){ 					// IF SPACE IS EMPTY, ADD MOVING THERE
+															// TO THE LIST OF AVAILABLE MOVES							
+							moves.push(new CheckerMove(i,normal[i][j])); 
+							continue;
+						}
+						
+						
+															// IF THE POTENTIAL SPACE HAS A RED PIECE
+															// LOOK ON THE OTHER SIDE OF IT
 						
 						/***************JUMPING W/O A KING*********************/
 						
@@ -68,7 +76,7 @@ public class CheckerBoard {
 							
 							// IF THE ORIGINAL SQUARE IS A LEFTY, JUMPS CAN ONLY BE TO THE RIGHT
 							if(member(i,lefties) 
-								moves.push(new CheckerMove(i,normal[i]));
+								moves.push(new CheckerMove(i,normal[i][j]));
 						
 						
 						j++;
