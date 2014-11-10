@@ -6,10 +6,15 @@ import java.util.Vector;
 
 public class CheckerBoard { 
 	
-	int[][] normal;
-	int[][] king;
-	int[] lefties;
-	int[] righties;
+	/************** STATIC VARIABLES *****************/
+	
+	static int[][] normal;
+	static int[][] king;
+	static int[] lefties;
+	static int[] righties;
+	
+	Vector<CheckerMove> movesList;
+	int possibleMoves;
 
 	ArrayList<CheckerPiece> board; 
 	
@@ -19,6 +24,10 @@ public class CheckerBoard {
 	public CheckerBoard(){
 		
 		board = new ArrayList<CheckerPiece>(32);
+		normal = Main.globals.NORMAL_ADJACENCE;
+		king = Main.globals.KING_ADJACENCE;
+		lefties = Main.globals.LEFTIES;
+		righties = Main.globals.RIGHTIES;
 	}
 	
 	/**
@@ -32,8 +41,9 @@ public class CheckerBoard {
 	
 	public CheckerBoard nextBoard(){
 		
+		
 		int move = 0;
-		while(move < possibleMoves()){
+		while(move < movesList.size()){
 			
 			
 		}
@@ -41,51 +51,58 @@ public class CheckerBoard {
 		//return 
 	}
 	
-	public Vector<CheckerMove> possibleMoves(){
+	public Vector<CheckerMove> getMoveList(){
 		
-		Stack<CheckerMove> moves = new Stack<CheckerMove>();
-		CheckerPiece target = null;
+		Stack<CheckerMove> moves = new Stack<CheckerMove>(); // TODO CHANGE TO PRIORITY QUEUE?
+		CheckerPiece square = null;
 		
-		for(int i=0; i<32; i++){			 // FOR EACH SQUARE ON THE BOARD
+		for(int i=0; i<32; i++){			 				// FOR EACH SQUARE ON THE BOARD
 			
-			if(board.get(i).empty) continue; // IF THE SPACE IS EMPTY, KEEP GOING
-			if(board.get(i).black){			 // IF MY PIECE OCCUPIES THE SPACE
+			if(board.get(i).isEmpty()) continue; 				// IF THE SPACE IS EMPTY, KEEP GOING
+			if(board.get(i).isBlack()){			 				// IF MY PIECE OCCUPIES THE SPACE
 				
-				if(!board.get(i).king){		 // AND THE PIECE ISN'T A KING
+				/************************* NOT A KING *************************/
+				
+				if(!board.get(i).isKing()){		 				// AND THE PIECE ISN'T A KING
 					
 					int j=0;
 					while(normal[i][j] != -1){  			// LOOK AT THE NORMAL ADJACENCY LIST
-						target = board.get(normal[i][j]);	// LOOK AT AN AVAILABLE MOVE
+						square = board.get(normal[i][j]);	// LOOK AT AN AVAILABLE MOVE
 						
-						if(target.empty){ 					// IF SPACE IS EMPTY, ADD MOVING THERE
+						if(!square.isEmpty() && square.isBlack()) continue;
+						
+						if(square.isEmpty()){ 					// IF SPACE IS EMPTY, ADD MOVING THERE
 															// TO THE LIST OF AVAILABLE MOVES							
 							moves.push(new CheckerMove(i,normal[i][j])); 
 							continue;
-						}
-						
-						
-															// IF THE POTENTIAL SPACE HAS A RED PIECE
-															// LOOK ON THE OTHER SIDE OF IT
-						
-						/***************JUMPING W/O A KING*********************/
-						
-						
-						
+						}						
+																									
 						// IF THE TARGET SQUARE IS OCCUPIED BY A RED (NOT BLACK) PIECE
-						if(!target.black && !target.empty)
+						if(!square.isBlack() && !square.isEmpty())
 							
 							// IF THE ORIGINAL SQUARE IS A LEFTY, JUMPS CAN ONLY BE TO THE RIGHT
-							if(member(i,lefties) 
+							if(member(i,lefties)) 
 								moves.push(new CheckerMove(i,normal[i][j]));
-						
-						
+												
 						j++;
 					}
-				}			
+				}
+				
+				/************************** IS A KING *************************/
+				
+				if(board.get(i).king){
+					
+					
+				}
 				
 				while()
 			}
 		}
+	}
+	
+	public boolean canJump(int square){
+		
+		return true;
 	}
 	
 	public boolean member(int square, int[] set){
