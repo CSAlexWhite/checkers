@@ -10,19 +10,26 @@ public class CheckerPiece {
 		   
 	}
 	
-	public void setEmpty(boolean value){
+	public void setEmpty(){
 		
-		empty = value;
+		empty = true;
 	}
 	
-	public void setBlack(boolean value){
+	public void setBlack(){
 		
-		black = value;
+		empty = false;
+		black = true;
+	}
+	
+	public void setRed(){
+		
+		empty = false;
+		black = false;	
 	}
 	
 	public void setKing(boolean value){
 		
-		king = value;
+		king = true;
 	}
 	
 	public boolean isKing(){
