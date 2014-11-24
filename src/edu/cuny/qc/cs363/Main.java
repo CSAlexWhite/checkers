@@ -23,7 +23,11 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
-		launch(args);
+		//launch(args);
+		
+		CheckerBoard test = new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
+		test.printBoard();
+		test.getChildren();
 	}
 	
 	public static class globals{
