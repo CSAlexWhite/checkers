@@ -48,7 +48,7 @@ public class CheckerBoard {
 		for(int i=0; i<32; i++) board.add(new CheckerPiece(inputBoard.get(i)));
 	}
 		
-	int currentPiece, target, jump;
+	int currentPiece, target1, target2, jump;
 	public /*Vector<CheckerBoard>*/ void getChildren(){
 		
 		CheckerPiece targetSquare = null;
@@ -73,14 +73,14 @@ public class CheckerBoard {
 					System.out.print("Position " + currentPiece);
 					System.out.print(" Neighbor " + neighbor + " is ");		// DEPENDING ON WHETHER KING OR NOT, SEARCH
 					
-					target = adjacence[currentPiece][neighbor];				// EITHER TWO OR FOUR NEIGHBORS
-					if(target == -1){
+					target1 = adjacence[currentPiece][neighbor];				// EITHER TWO OR FOUR NEIGHBORS
+					if(target1 == -1){
 						
 						System.out.println("Out of Bounds");
 						continue;											// KEEP GOING WHEN YOU CAN'T MOVE THERE
 					}
 					
-					targetSquare = newBoard.get(target);					// LOOK AT AN AVAILABLE MOVE
+					targetSquare = newBoard.get(target1);					// LOOK AT AN AVAILABLE MOVE
 					
 					if(targetSquare.isBlack()){ 
 						
@@ -91,25 +91,29 @@ public class CheckerBoard {
 					if(targetSquare.isEmpty()){ 							// IF SPACE IS EMPTY AND WE'RE NOT JUMPING
 						
 						System.out.println("Empty!");
-//						System.out.println("We're switching " + currentPiece
-//								+ " with " + target);
+						//System.out.println("We're switching " + currentPiece
+						//		+ " with " + target);
 						//printArray(newBoard);
-						swap(newBoard, target, currentPiece);				// SWAP PIECES
+						swap(newBoard, target1, currentPiece);			// SWAP PIECES
 						//printArray(newBoard);
 						movesList.add(new CheckerBoard(newBoard)); 		// RECORD THE MOVE
-						swap(newBoard, target, currentPiece);				// SWAP THEM BACK
+						swap(newBoard, target1, currentPiece);			// SWAP THEM BACK
 						
 						continue;
 					}
 															
 					if(targetSquare.isRed()){								// IF THE TARGET SQUARE IS OCCUPIED BY A RED PIECE
-						System.out.println("is Red?");
-						jump = adjacence[neighbor][neighbor];
+
+						target2 = adjacence[adjacence[currentPiece][neighbor]][neighbor];
+						System.out.println("Jump to is: " + target2);
+						if(target2 != -1)
+						jump = target2;
 						
 						if(newBoard.get(jump).isEmpty()){					// AND THE PIECE ACROSS IS EMPTY
 							
+							swap(newBoard, currentPiece, jump);
 							jump(newBoard, jump);							// JUMP!
-				
+							swap(newBoard, currentPiece, jump);
 						}
 					}
 				} // FOR NEIGHBORS		
@@ -122,6 +126,7 @@ public class CheckerBoard {
 		
 	public void jump(ArrayList<CheckerPiece> currentBoard, int currentPiece){ 
 		
+		int target1, target2;
 		System.out.println("JUMPING?");
 		// WE'RE JUMPING, WE CAN'T STOP!
 		
@@ -130,10 +135,20 @@ public class CheckerBoard {
 		
 		for(int neighbor=0; neighbor<currentBoard.get(currentPiece).numNeighbors(); neighbor++){
 			
-			target = adjacence[currentPiece][neighbor];				// EITHER TWO OR FOUR NEIGHBORS
-			if(target == -1) continue;								// KEEP GOING WHEN YOU CAN'T MOVE THERE
+			target1 = adjacence[currentPiece][neighbor];		// TARGET1 IS THE IMMEDIATE NEIGHBOR
+			if(target1 == -1){
+				
+				System.out.print("target1 =" + target1);
+				continue;	
+			}
 			
-			targetSquare = board.get(target);								// LOOK AT AN AVAILABLE MOVE
+			target2 = adjacence[target1][neighbor];				// TARGET2 IS THE NEIGHBORS'S NEIGHBOR			
+			if(target2 == -1){
+				
+				continue;								// KEEP GOING WHEN YOU CAN'T MOVE THERE
+			}
+			
+			targetSquare = currentBoard.get(target2);								// LOOK AT AN AVAILABLE MOVE
 			
 			if(targetSquare.isBlack()) continue;							// IF OUR PIECE IS IN THE WAY																				// IGNORE THIS SPACE KEEP GOING
 			
@@ -141,13 +156,13 @@ public class CheckerBoard {
 									
 			if(targetSquare.isRed()){										// IF THE TARGET SQUARE IS OCCUPIED BY A RED PIECE
 				
-				jump = adjacence[neighbor][neighbor];
+				jump = target2;
 				
 				if(currentBoard.get(jump).isEmpty()){				// AND THERE'S A SPACE ON THE OTHER SIDE OF IT
 					
-					currentBoard.get(currentPiece).setEmpty();		// REMOVE THE CURRENT PIECE
-					currentBoard.get(target).setEmpty();			// CAPTURE THE RED PIECE
-					currentBoard.get(jump).setBlack();				// SET THE CURRENT PIECE ACROSS THE RED PIECE
+					System.out.println("What now?");
+					currentBoard.get(jump).setEmpty();			// CAPTURE THE RED PIECE
+					swap(currentBoard, jump, currentPiece);			// SET THE CURRENT PIECE ACROSS THE RED PIECE
 					jump(currentBoard, jump);						// JUMP
 				}
 				
