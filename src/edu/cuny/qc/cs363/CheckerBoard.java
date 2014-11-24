@@ -8,12 +8,11 @@ public class CheckerBoard {
 	
 	/************** STATIC VARIABLES *****************/
 	
-	static int[][] normal;
+	static int[][] adjacence;
 	static int[][] king;
-	static int[] lefties;
-	static int[] righties;
+
 	
-	Vector<CheckerMove> movesList;
+	Stack<CheckerBoard> movesList;
 	int possibleMoves;
 
 	ArrayList<CheckerPiece> board; 
@@ -24,10 +23,8 @@ public class CheckerBoard {
 	public CheckerBoard(){
 		
 		board = new ArrayList<CheckerPiece>(32);
-		normal = Main.globals.NORMAL_ADJACENCE;
-		king = Main.globals.KING_ADJACENCE;
-		lefties = Main.globals.LEFTIES;
-		righties = Main.globals.RIGHTIES;
+		adjacence = Main.globals.ADJACENCE;
+		movesList = new Stack<CheckerBoard>();
 	}
 	
 	/**
@@ -49,112 +46,111 @@ public class CheckerBoard {
 		
 	}
 	
-	public CheckerBoard nextBoard(){
-		
-		
-		int move = 0;
-		while(move < movesList.size()){
-			
-			
-		}
-		
-		//return 
-	}
+//	public CheckerBoard nextBoard(){
+//		
+//		
+//		int move = 0;
+//		while(move < movesList.size()){
+//			
+//			
+//		}
+//		
+//		//return 
+//	}
 	
-	public Vector<CheckerBoard> getChildren(){
+	int currentPiece, target, jump;
+	public /*Vector<CheckerBoard>*/ void getChildren(){
 		
-		Stack<CheckerBoard> moves = new Stack<CheckerBoard>(); 	// TODO CHANGE TO PRIORITY QUEUE?
-		CheckerPiece square = null;
+		CheckerPiece targetSquare = null;
 		
-		for(int position=0; position<32; position++){			 		// FOR EACH SQUARE ON THE BOARD
+		for(int position=0; position<32; position++){							// FOR EACH SQUARE ON THE BOARD
 			
-			if(board.get(position).isEmpty()) continue; 				// IF THE SPACE IS EMPTY, KEEP GOING
+			currentPiece = position;
+			if(board.get(currentPiece).isEmpty()) continue; 							// IF THE SPACE IS EMPTY, KEEP GOING
 			
-			ArrayList<CheckerPiece> newBoard = new ArrayList<CheckerPiece>(32);	 // CLONE THE CURRENT BOARD
-			for(int l=0; l<32; l++) newBoard.set(position, board.get(position));
+			ArrayList<CheckerPiece> newBoard = new ArrayList<CheckerPiece>(32);	// CLONE THE CURRENT BOARD
+			for(int l=0; l<32; l++) newBoard.set(currentPiece, board.get(currentPiece));
 			
-			if(board.get(position).isBlack()){			 				// IF MY PIECE OCCUPIES THE SPACE
-				
+			
+			if(board.get(currentPiece).isBlack()){			 						// IF MY PIECE OCCUPIES THE SPACE		
+		
 				/************************* NOT A KING *************************/
 				
-				if(!board.get(position).isKing()){		 				// AND THE PIECE ISN'T A KING
-					
-					int neighbor=0;
-					while(normal[position][neighbor] != -1){  				// LOOK AT THE NORMAL ADJACENCY LIST
-						square = board.get(normal[position][neighbor]);		// LOOK AT AN AVAILABLE MOVE
+				if(!board.get(currentPiece).isKing()){		 						// AND THE PIECE ISN'T A KING
 						
-						if(!square.isEmpty() && square.isBlack()) continue;	// IF OUR PIECE IS IN THE WAY
-																			// IGNORE THIS SPACE KEEP GOING
+					for(int neighbor = 0; 										// LOOK AT THE ADJACENCY LIST
+							neighbor<board.get(currentPiece).numNeighbors(); 
+							neighbor++)
+					{  	
+																				// DEPENDING ON WHETHER KING OR NOT, SEARCH
+						target = adjacence[currentPiece][neighbor];				// EITHER TWO OR FOUR NEIGHBORS
+						if(target == -1) continue;								// KEEP GOING WHEN YOU CAN'T MOVE THERE
 						
-						if(square.isEmpty()){ 					// IF SPACE IS EMPTY, ADD MOVING THERE
-																// TO THE LIST OF AVAILABLE MOVES		
-							newBoard.get(position).setEmpty();
-							newBoard.get(normal[position][neighbor]).setBlack();
-							moves.push(new CheckerBoard(newBoard)); 
+						targetSquare = board.get(target);								// LOOK AT AN AVAILABLE MOVE
+						
+						if(targetSquare.isBlack()) continue;							// IF OUR PIECE IS IN THE WAY																				// IGNORE THIS SPACE KEEP GOING
+						
+						if(targetSquare.isEmpty()){ 						// IF SPACE IS EMPTY AND WE'RE NOT JUMPING
+																					
+							newBoard.get(currentPiece).setEmpty();				// REMOVE OUR PIECE FROM THE CURRENT SPACE
+							newBoard.get(										// PUT IT ON THE NEW SPACE
+								adjacence[currentPiece][neighbor]).setBlack();
+							movesList.push(new CheckerBoard(newBoard)); 			// ADD THIS BOARD TO THE LIST OF NEW BOARDS
 							continue;
-						}																															
-												
-						if(square.isRed()){				// IF THE TARGET SQUARE IS OCCUPIED BY A RED PIECE
-							
-							jump(newBoard, position, true);
-														
-														// IF THE ORIGINAL SQUARE IS A LEFTY, 
-														// JUMPS CAN ONLY BE TO THE RIGHT
-							if(member(position,lefties)) 
-								moves.push(new CheckerBoard(this, new CheckerMove(position, normal[position][neighbor]))); 			
 						}
-						
-						neighbor++;
-					}
-				}
-				
-				/************************** IS A KING *************************/
-				
-				if(board.get(position).isKing()){
+																
+						if(targetSquare.isRed()){										// IF THE TARGET SQUARE IS OCCUPIED BY A RED PIECE
+							
+							jump = adjacence[neighbor][neighbor];
+							
+							if(newBoard.get(jump).isEmpty()){
+								
+								jump(newBoard, jump);
 					
-					
-				}
-				
-				//while()
+							}
+						}
+					} /* FOR */
+				} /* IF */
 			}
 		}
 	}
-	
-	Vector<CheckerBoard> jumpBoards = new Vector<CheckerBoard>();
-	
-	public Vector<CheckerBoard> jump(ArrayList<CheckerPiece> current, int square, boolean king){ // RETURNS A VECTOR OF BOARDS RESULTING FROM JUMPS
-				
-		if(king){
 		
-			if(member(square, lefties)){
-				
-				 
-			}
+	public void jump(ArrayList<CheckerPiece> currentBoard, int currentPiece){ 
+		
+		// WE'RE JUMPING, WE CAN'T STOP!
+		
+		CheckerPiece targetSquare;
+		movesList.push(new CheckerBoard(currentBoard));				// BOARD WITH THIS CAPTURE GOES ON THE STACK
+		
+		for(int neighbor=0; neighbor<currentBoard.get(currentPiece).numNeighbors(); neighbor++){
 			
-			if(member(square, righties)){
-				
-				
-			}
+			target = adjacence[currentPiece][neighbor];				// EITHER TWO OR FOUR NEIGHBORS
+			if(target == -1) continue;								// KEEP GOING WHEN YOU CAN'T MOVE THERE
 			
-			else{}
+			targetSquare = board.get(target);								// LOOK AT AN AVAILABLE MOVE
+			
+			if(targetSquare.isBlack()) continue;							// IF OUR PIECE IS IN THE WAY																				// IGNORE THIS SPACE KEEP GOING
+			
+			if(targetSquare.isEmpty()) continue;							// IF SPACE IS EMPTY AND WE'RE NOT JUMPING
+									
+			if(targetSquare.isRed()){										// IF THE TARGET SQUARE IS OCCUPIED BY A RED PIECE
+				
+				jump = adjacence[neighbor][neighbor];
+				
+				if(currentBoard.get(jump).isEmpty()){				// AND THERE'S A SPACE ON THE OTHER SIDE OF IT
+					
+					currentBoard.get(currentPiece).setEmpty();		// REMOVE THE CURRENT PIECE
+					currentBoard.get(target).setEmpty();			// CAPTURE THE RED PIECE
+					currentBoard.get(jump).setBlack();				// SET THE CURRENT PIECE ACROSS THE RED PIECE
+					jump(currentBoard, jump);						// JUMP
+				}
+				
+				else continue;
+			}			
+		
 		}
 		
-		if(!king){
-			
-			if(member(square, lefties)){
-				
-				// 
-			}
-			
-			if(member(square, righties)){
-				
-				
-			}
-			
-			else{}
-		}
-		
-		return jumpBoards;
+		return;
 	}
 	
 	public void jump(){

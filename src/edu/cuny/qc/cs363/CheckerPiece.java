@@ -44,11 +44,17 @@ public class CheckerPiece {
 	
 	public boolean isBlack(){
 		
-		return black;
+		return !empty && black;
 	}
 	
 	public boolean isRed(){
 		
 		return !empty && !black;
+	}
+	
+	public int numNeighbors(){
+		
+		if(isKing()) return 4;
+		else return 2;
 	}
 }
