@@ -40,13 +40,9 @@ public class CheckerBoard {
 		adjacence = Main.globals.ADJACENCE;
 		movesList = new Stack<CheckerBoard>();		
 		
-		//movesList.add(this);
-		getChildren();
 		myValue = evaluate();
 		
 		System.out.println("This board's value is " + myValue);
-		
-		//printBoard(0);
 	}
 	
 	public CheckerBoard(ArrayList<CheckerPiece> inputBoard){
@@ -63,7 +59,7 @@ public class CheckerBoard {
 	}
 		
 	int currentPiece, target1, target2, jump;
-	public /*Vector<CheckerBoard>*/ void getChildren(){
+	public /*Vector<CheckerBoard>*/ void getChildren(int player /*0-black, 1-red*/){
 		
 		CheckerPiece targetSquare = null;
 		
