@@ -25,10 +25,10 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		//launch(args);
 											//01234567890123456789012345678901	
-		CheckerBoard test = new CheckerBoard("OOOOOOOOOOO        OXXXXXXXXXXXX");
+		CheckerBoard test = new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
 		//test.printBoard(0);
 		//test.printPositions();
-		test.getChildren();
+		//test.getChildren();
 	}
 	
 	public static class globals{

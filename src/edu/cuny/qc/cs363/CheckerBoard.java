@@ -12,6 +12,7 @@ public class CheckerBoard {
 	
 	Vector<CheckerBoard> movesList;
 	int possibleMoves;
+	int myValue;
 
 	ArrayList<CheckerPiece> board; 
 	
@@ -39,13 +40,26 @@ public class CheckerBoard {
 		adjacence = Main.globals.ADJACENCE;
 		movesList = new Stack<CheckerBoard>();		
 		
-		movesList.add(this);
+		//movesList.add(this);
+		getChildren();
+		myValue = evaluate();
+		
+		System.out.println("This board's value is " + myValue);
+		
+		//printBoard(0);
 	}
 	
 	public CheckerBoard(ArrayList<CheckerPiece> inputBoard){
 		
 		board = new ArrayList<CheckerPiece>();
 		for(int i=0; i<32; i++) board.add(new CheckerPiece(inputBoard.get(i)));
+		
+		adjacence = Main.globals.ADJACENCE;
+		movesList = new Stack<CheckerBoard>();		
+		
+		//movesList.add(this);
+		//getChildren();
+		evaluate();
 	}
 		
 	int currentPiece, target1, target2, jump;
@@ -62,37 +76,37 @@ public class CheckerBoard {
 			for(int square=0; square<32; square++) 
 				newBoard.add(board.get(square));
 			
-			if(board.get(currentPiece).isBlack()){			 						// IF MY PIECE OCCUPIES THE SPACE		
+			if(newBoard.get(currentPiece).isBlack()){			 						// IF MY PIECE OCCUPIES THE SPACE		
 		
 				/************************* NOT A KING *************************/				
 						
 				for(int neighbor = 0; 										// LOOK AT THE ADJACENCY LIST
-						neighbor<board.get(currentPiece).numNeighbors(); 
+						neighbor<newBoard.get(currentPiece).numNeighbors(); 
 						neighbor++)
 				{  	
-					System.out.print("Position " + currentPiece);
-					System.out.print(" Neighbor " + neighbor + " is ");		// DEPENDING ON WHETHER KING OR NOT, SEARCH
+//					System.out.print("Position " + currentPiece);
+//					System.out.print(" Neighbor " + neighbor + " is ");		// DEPENDING ON WHETHER KING OR NOT, SEARCH
 					
 					target1 = adjacence[currentPiece][neighbor];				// EITHER TWO OR FOUR NEIGHBORS
 					if(target1 == -1){
 						
-						System.out.println("Out of Bounds");
-						continue;											// KEEP GOING WHEN YOU CAN'T MOVE THERE
+						//System.out.println("Out of Bounds");
+						continue;										// KEEP GOING WHEN YOU CAN'T MOVE THERE
 					}
 					
-					targetSquare = newBoard.get(target1);					// LOOK AT AN AVAILABLE MOVE
+					targetSquare = newBoard.get(target1);				// LOOK AT AN AVAILABLE MOVE
 					
 					if(targetSquare.isBlack()){ 
 						
-						System.out.println("Black!");
-						continue;											// IF OUR PIECE IS IN THE WAY																				// IGNORE THIS SPACE KEEP GOING
+						//System.out.println("Black!");
+						continue;										// IF OUR PIECE IS IN THE WAY																				// IGNORE THIS SPACE KEEP GOING
 					}
 					
-					if(targetSquare.isEmpty()){ 							// IF SPACE IS EMPTY AND WE'RE NOT JUMPING
+					if(targetSquare.isEmpty()){ 						// IF SPACE IS EMPTY AND WE'RE NOT JUMPING
 						
-						System.out.println("Empty!");
-						//System.out.println("We're switching " + currentPiece
-						//		+ " with " + target);
+						//System.out.println("Empty!");
+//						System.out.println("We're switching " + currentPiece
+//								+ " with " + target1);
 						//printArray(newBoard);
 						swap(newBoard, target1, currentPiece);			// SWAP PIECES
 						//printArray(newBoard);
@@ -101,18 +115,19 @@ public class CheckerBoard {
 						
 						continue;
 					}
-															
+															 
 					if(targetSquare.isRed()){								// IF THE TARGET SQUARE IS OCCUPIED BY A RED PIECE
 
 						target2 = adjacence[adjacence[currentPiece][neighbor]][neighbor];
-						System.out.println("Jump to is: " + target2);
+						//System.out.println("Jump to is: " + target2);
 						if(target2 != -1)
 						jump = target2;
 						
 						if(newBoard.get(jump).isEmpty()){					// AND THE PIECE ACROSS IS EMPTY
 							
 							swap(newBoard, currentPiece, jump);
-							jump(newBoard, jump);							// JUMP!
+							//newBoard.get(target1).setEmpty();				// REMOVE RED PIECE, TRACK CAPTURED PIECES?
+							jump(newBoard, currentPiece, jump);				// JUMP!
 							swap(newBoard, currentPiece, jump);
 						}
 					}
@@ -120,25 +135,26 @@ public class CheckerBoard {
 			} // IF OUR PIECE 
 		} // FOR ALL SQUARES
 		
-		int boardNo = 0; 
+		int boardNo = 1; 
 		for(int i=0; i<movesList.size(); i++) movesList.get(i).printBoard(boardNo++);
 	}
 		
-	public void jump(ArrayList<CheckerPiece> currentBoard, int currentPiece){ 
+	public void jump(ArrayList<CheckerPiece> currentBoard, int previousPiece, int currentPiece){ 
 		
 		int target1, target2;
-		System.out.println("JUMPING?");
+		//System.out.println("JUMPING?");
 		// WE'RE JUMPING, WE CAN'T STOP!
 		
 		CheckerPiece targetSquare;
 		movesList.add(new CheckerBoard(currentBoard));				// BOARD WITH THIS CAPTURE GOES ON THE STACK
+		swap(currentBoard, previousPiece, jump);
 		
 		for(int neighbor=0; neighbor<currentBoard.get(currentPiece).numNeighbors(); neighbor++){
 			
 			target1 = adjacence[currentPiece][neighbor];		// TARGET1 IS THE IMMEDIATE NEIGHBOR
 			if(target1 == -1){
 				
-				System.out.print("target1 =" + target1);
+				//System.out.print("target1 =" + target1);
 				continue;	
 			}
 			
@@ -161,9 +177,9 @@ public class CheckerBoard {
 				if(currentBoard.get(jump).isEmpty()){				// AND THERE'S A SPACE ON THE OTHER SIDE OF IT
 					
 					System.out.println("What now?");
-					currentBoard.get(jump).setEmpty();			// CAPTURE THE RED PIECE
+					//currentBoard.get(target1).setEmpty();				// CAPTURE THE RED PIECE
 					swap(currentBoard, jump, currentPiece);			// SET THE CURRENT PIECE ACROSS THE RED PIECE
-					jump(currentBoard, jump);						// JUMP
+					jump(currentBoard, currentPiece, jump);						// JUMP
 				}
 				
 				else continue;
@@ -200,6 +216,28 @@ public class CheckerBoard {
 			
 			System.out.println();
 		}
+	}
+	
+	public int evaluate(){
+		
+		int value = 0;
+				
+		// COUNT THE KINGS
+		for(int i=0; i<32; i++){ 
+			
+			if(board.get(i).isBlack() && !board.get(i).isKing()) value += 1;			
+				
+			if(board.get(i).isBlack() && board.get(i).isKing())	value += 5;
+			
+			if(board.get(i).isRed() && !board.get(i).isKing()) value -= 1;
+			
+			if(board.get(i).isRed() && board.get(i).isKing()) value -= 5;		
+		}
+		
+		value += movesList.size();
+		
+		// ideas: more possible moves is good, less middle board space is better
+		return value;
 	}
 	
 	public void printBoard(int number){
