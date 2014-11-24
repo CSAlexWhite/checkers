@@ -9,10 +9,24 @@ public class CheckerPiece {
 	
 	public CheckerPiece(char type) {
 		
+		king = false;
+		
 		this.type = type;
 		if(type == ' ') setEmpty();
+		
 		if(type == 'X') setBlack();
+		if(type == 'K'){ setBlack(); setKing();}
+		
 		if(type == 'O') setRed();
+		if(type == 'Q'){ setRed(); setKing();}
+	}
+	
+	public CheckerPiece(CheckerPiece input){
+		
+		this.empty = input.empty;
+		this.black = input.black;
+		this.king = input.king;
+		this.type = input.type;
 	}
 	
 	public void setEmpty(){
@@ -35,8 +49,10 @@ public class CheckerPiece {
 		black = false;	
 	}
 	
-	public void setKing(boolean value){
+	public void setKing(){
 		
+		if(!black) type = 'Q';
+		if(black) type = 'K';
 		king = true;
 	}
 	
