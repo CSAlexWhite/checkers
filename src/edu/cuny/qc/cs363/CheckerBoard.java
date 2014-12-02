@@ -53,9 +53,9 @@ public class CheckerBoard {
 		adjacence = Main.globals.ADJACENCE;
 		movesList = new Stack<CheckerBoard>();		
 		
-		//movesList.add(this);
-		//getChildren();
-		evaluate();
+		movesList.add(this);
+		//getChildren(0);
+		//evaluate();
 	}
 		
 	int currentPiece, target1, target2, jump;
@@ -124,13 +124,14 @@ public class CheckerBoard {
 							swap(newBoard, currentPiece, jump);
 							//newBoard.get(target1).setEmpty();				// REMOVE RED PIECE, TRACK CAPTURED PIECES?
 							jump(newBoard, currentPiece, jump);				// JUMP!
-							swap(newBoard, currentPiece, jump);
+							//swap(newBoard, currentPiece, jump);
 						}
 					}
 				} // FOR NEIGHBORS		
 			} // IF OUR PIECE 
 		} // FOR ALL SQUARES
 		
+		System.out.println("I'm here!");
 		int boardNo = 1; 
 		for(int i=0; i<movesList.size(); i++) movesList.get(i).printBoard(boardNo++);
 	}
