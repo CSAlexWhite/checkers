@@ -13,6 +13,8 @@ public class CheckerBoard {
 	Vector<CheckerBoard> movesList;
 	int possibleMoves;
 	int myValue;
+	
+	int turn;
 
 	ArrayList<CheckerPiece> board; 
 	
@@ -33,6 +35,7 @@ public class CheckerBoard {
 	 */
 	public CheckerBoard(String key){
 		
+		turn = 0;
 		board = new ArrayList<CheckerPiece>();
 		for(int i=0; i<32; i++)
 			board.add(0, new CheckerPiece(key.charAt(i)));
@@ -47,6 +50,7 @@ public class CheckerBoard {
 	
 	public CheckerBoard(ArrayList<CheckerPiece> inputBoard){
 		
+		turn++;
 		board = new ArrayList<CheckerPiece>();
 		for(int i=0; i<32; i++) board.add(new CheckerPiece(inputBoard.get(i)));
 		
@@ -54,7 +58,8 @@ public class CheckerBoard {
 		movesList = new Stack<CheckerBoard>();		
 		
 		movesList.add(this);
-		//getChildren(0);
+		if(turn%2==0) getChildren(0);
+		else getChildren(1);
 		//evaluate();
 	}
 		
