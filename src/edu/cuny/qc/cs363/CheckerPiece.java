@@ -34,6 +34,7 @@ public class CheckerPiece {
 		
 		type = ' ';
 		empty = true;
+		king = false;
 	}
 	
 	public void setBlack(){
@@ -65,6 +66,11 @@ public class CheckerPiece {
 		}
 		
 		//else System.out.println("WRONGG!!!");
+	}
+	
+	public void unKing(){
+		
+		king = false;
 	}
 	
 	public boolean isKing(){
