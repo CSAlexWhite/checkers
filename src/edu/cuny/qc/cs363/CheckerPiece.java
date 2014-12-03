@@ -8,10 +8,9 @@ public class CheckerPiece {
 	public char type;  
 	public int position;
 	
-	public CheckerPiece(char type, int pos) {
+	public CheckerPiece(char type) {
 		
 		king = false;
-		position = pos;
 		
 		this.type = type;
 		if(type == ' ') setEmpty();
@@ -21,9 +20,6 @@ public class CheckerPiece {
 		
 		if(type == 'O') setRed();
 		if(type == 'Q'){ setRed(); setKing();}
-		
-		if(isBlack() && position<4) setKing();
-		if(isRed() && position>27) setKing();
 	}
 	
 	public CheckerPiece(CheckerPiece input){

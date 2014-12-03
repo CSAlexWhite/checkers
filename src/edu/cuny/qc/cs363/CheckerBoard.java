@@ -25,7 +25,7 @@ public class CheckerBoard {
 	public CheckerBoard(){
 		
 		board = new ArrayList<CheckerPiece>();
-		for(int i=0; i<32; i++) board.add(new CheckerPiece('0',i));
+		for(int i=0; i<32; i++) board.add(new CheckerPiece('0'));
 		black_adjacence = Main.globals.BLACK_ADJACENCE;
 		red_adjacence = Main.globals.RED_ADJACENCE;
 		movesList = new Stack<CheckerBoard>();
@@ -40,7 +40,7 @@ public class CheckerBoard {
 		turn = 0;
 		board = new ArrayList<CheckerPiece>();
 		for(int i=0; i<32; i++)
-			board.add(0, new CheckerPiece(key.charAt(i), i));
+			board.add(0, new CheckerPiece(key.charAt(i)));
 		
 		black_adjacence = Main.globals.BLACK_ADJACENCE;
 		red_adjacence = Main.globals.RED_ADJACENCE;
@@ -63,8 +63,8 @@ public class CheckerBoard {
 		movesList = new Stack<CheckerBoard>();		
 		
 		movesList.add(this);
-		//if(turn<95) 
-			getChildren(turn);
+		//if(turn<1) 
+			//getChildren(turn);
 		//evaluate();
 	}
 		
@@ -100,9 +100,10 @@ public class CheckerBoard {
 
 						if(targetSquare.isEmpty()){ 							// IF SPACE IS EMPTY AND WE'RE NOT JUMPING
 							
-							swap(newBoard, target1, currentPiece);				// SWAP PIECES
+							//System.out.println("Swapping " + currentPiece + " with " + target1);
+							swap(newBoard, currentPiece, target1);				// SWAP PIECES
 							movesList.add(new CheckerBoard(newBoard, player)); 	// RECORD THE MOVE
-							swap(newBoard, target1, currentPiece);				// SWAP THEM BACK						
+							swap(newBoard, currentPiece, target1);				// SWAP THEM BACK						
 							continue;
 						}
 																 
@@ -155,9 +156,10 @@ public class CheckerBoard {
 											
 						if(targetSquare.isEmpty()){ 							// IF SPACE IS EMPTY AND WE'RE NOT JUMPING
 							
-							swap(newBoard, target1, currentPiece);				// SWAP PIECES
+							//System.out.println("Swapping " + currentPiece + " with " + target1);
+							swap(newBoard, currentPiece, target1);				// SWAP PIECES
 							movesList.add(new CheckerBoard(newBoard, player)); 	// RECORD THE MOVE
-							swap(newBoard, target1, currentPiece);				// SWAP THEM BACK						
+							swap(newBoard, currentPiece, target1);				// SWAP THEM BACK						
 							continue;
 						}
 																 
@@ -188,6 +190,8 @@ public class CheckerBoard {
 	}
 		
 	public void jump(int player, ArrayList<CheckerPiece> currentBoard, int previousPiece, int currentPiece){ 
+		
+		System.out.println("Jumping!");
 		
 		if(player%2 == 0){
 
@@ -272,45 +276,98 @@ public class CheckerBoard {
 	
 	public void swap(ArrayList<CheckerPiece> board, int from, int to){
 		
-		if(to<4 && board.get(from).isRed() && !board.get(from).isKing()){ 
+		System.out.println("Swapping " + from + " with " + to);
+		if(board.get(from).isKing()) System.out.println("I'm already a king?");
+		
+		if(board.get(from).isRed() && to<4){// && !board.get(from).isKing()){ 
 			
-			System.out.println("\nBEFORE");
-			System.out.print("FROM: "); board.get(from).print();
-			System.out.print("TO: "); board.get(to).print();
+//			System.out.println("\nBEFORE");
+//			System.out.print("FROM: "); board.get(from).print();
+//			System.out.print("TO: "); board.get(to).print();
 			
-			CheckerPiece temp = board.get(to);
-			board.set(to, board.get(from));
-			board.set(from, temp);
+			System.out.println("SHOULD KING!");
+			
+			board.get(from).setEmpty();
+			board.get(to).setRed();
 			board.get(to).setKing();
 			
-			System.out.println("\nAFTER");
-			System.out.print("FROM: "); board.get(from).print();
-			System.out.print("TO: "); board.get(to).print();
+			
+//			CheckerPiece temp = board.get(to);
+//			board.set(to, board.get(from));
+//			board.set(from, temp);
+//			board.get(to).setKing();
+			
+//			System.out.println("\nAFTER");
+//			System.out.print("FROM: "); board.get(from).print();
+//			System.out.print("TO: "); board.get(to).print();
 			return;
 		}
 		
-		else if(to>27 && board.get(from).isBlack() && !board.get(from).isKing()){ 
+		else if(board.get(from).isBlack() && to>27){// && !board.get(from).isKing()){ 
 			
-			System.out.println("\nBEFORE");
-			System.out.print("FROM: "); board.get(from).print();
-			System.out.print("TO: "); board.get(to).print();
+//			System.out.println("\nBEFORE");
+//			System.out.print("FROM: "); board.get(from).print();
+//			System.out.print("TO: "); board.get(to).print();
+						
+			System.out.println("SHOULD KING!");
 			
-			CheckerPiece temp = board.get(to);
-			board.set(to, board.get(from));
-			board.set(from, temp);
+			board.get(from).setEmpty();
+			board.get(to).setBlack();
 			board.get(to).setKing();
 			
-			System.out.println("\nAFTER");
-			System.out.print("FROM: "); board.get(from).print();
-			System.out.print("TO: "); board.get(to).print();
+//			CheckerPiece temp = board.get(to);
+//			board.set(to, board.get(from));
+//			board.set(from, temp);
+//			board.get(to).setKing();
+			
+//			System.out.println("\nAFTER");
+//			System.out.print("FROM: "); board.get(from).print();
+//			System.out.print("TO: "); board.get(to).print();
 			return;
 		}
+		
+		else if(board.get(from).isRed() && to>3){// && !board.get(from).isKing()){ 
 			
-		else {
+//			System.out.println("\nBEFORE");
+//			System.out.print("FROM: "); board.get(from).print();
+//			System.out.print("TO: "); board.get(to).print();
+						
+			System.out.println("SHOULD KING!");
 			
-			CheckerPiece temp = board.get(to);
-			board.set(to, board.get(from));
-			board.set(from, temp);
+			board.get(from).setEmpty();
+			board.get(to).setRed();
+			
+//			CheckerPiece temp = board.get(to);
+//			board.set(to, board.get(from));
+//			board.set(from, temp);
+//			board.get(to).setKing();
+			
+//			System.out.println("\nAFTER");
+//			System.out.print("FROM: "); board.get(from).print();
+//			System.out.print("TO: "); board.get(to).print();
+			return;
+		}
+		
+		else if(board.get(from).isBlack() && to<28){// && !board.get(from).isKing()){ 
+	
+		//	System.out.println("\nBEFORE");
+		//	System.out.print("FROM: "); board.get(from).print();
+		//	System.out.print("TO: "); board.get(to).print();
+						
+			System.out.println("SHOULD KING!");
+			
+			board.get(from).setEmpty();
+			board.get(to).setBlack();
+			
+		//	CheckerPiece temp = board.get(to);
+		//	board.set(to, board.get(from));
+		//	board.set(from, temp);
+		//	board.get(to).setKing();
+			
+		//	System.out.println("\nAFTER");
+		//	System.out.print("FROM: "); board.get(from).print();
+		//	System.out.print("TO: "); board.get(to).print();
+			return;
 		}
 	}
 	

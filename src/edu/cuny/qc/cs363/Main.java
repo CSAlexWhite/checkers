@@ -25,8 +25,9 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		//launch(args);
 											//01234567890123456789012345678901	
-		CheckerBoard test = new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
+		//CheckerBoard test = new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
 		//CheckerBoard test = new CheckerBoard("KKKKKKKKKKKKK       QQQQQQQQQQQQ");
+		CheckerBoard test = new CheckerBoard("    XXXX                OOOO    ");
 		//CheckerBoard test = new CheckerBoard("K                   OO    K     ");
 		//CheckerBoard test = new CheckerBoard("XX OO XX OO XX OO XX OO XX OO XX");
 		test.printBoard(0,0);
@@ -45,7 +46,7 @@ public class Main extends Application {
 		/* 04 */{8,9,0,1},
 		/* 05 */{9,10,1,2},
 		/* 06 */{10,11,2,3},
-		/* 07 */{11,-1,6,7},
+		/* 07 */{11,-1,3,-1},
 		/* 08 */{-1,12,-1,4},
 		/* 09 */{12,13,4,5},
 		/* 10 */{13,14,5,6},
@@ -72,7 +73,9 @@ public class Main extends Application {
 		/* 31 */{-1,-1,27,-1}};		
 	
 	static final int[][] RED_ADJACENCE = new int[][]{
-				
+		
+		//CHECKED
+		
 		/* 00 */{-1,-1,-1,4},
 		/* 01 */{-1,-1,4,5},
 		/* 02 */{-1,-1,5,6},
@@ -80,7 +83,7 @@ public class Main extends Application {
 		/* 04 */{0,1,8,9},
 		/* 05 */{1,2,9,10},
 		/* 06 */{2,3,10,11},
-		/* 07 */{6,7,11,-1},
+		/* 07 */{3,-1,11,-1},
 		/* 08 */{-1,4,-1,12},
 		/* 09 */{4,5,12,13},
 		/* 10 */{5,6,13,14},
@@ -99,7 +102,7 @@ public class Main extends Application {
 		/* 23 */{19,-1,27,-1},
 		/* 24 */{-1,20,-1,28},
 		/* 25 */{20,21,28,29},
-		/* 26 */{29,30,21,22},
+		/* 26 */{21,22,29,30},
 		/* 27 */{22,23,30,31},
 		/* 28 */{24,25,-1,-1},
 		/* 29 */{25,26,-1,-1},
