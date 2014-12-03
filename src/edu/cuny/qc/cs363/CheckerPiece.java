@@ -5,11 +5,13 @@ public class CheckerPiece {
 	private boolean empty; // whether there is a piece
 	private boolean black;  // whether this is my piece or the other's
 	private boolean king;   // whether it is a king
-	public char type;   
+	public char type;  
+	public int position;
 	
-	public CheckerPiece(char type) {
+	public CheckerPiece(char type, int pos) {
 		
 		king = false;
+		position = pos;
 		
 		this.type = type;
 		if(type == ' ') setEmpty();
@@ -19,6 +21,9 @@ public class CheckerPiece {
 		
 		if(type == 'O') setRed();
 		if(type == 'Q'){ setRed(); setKing();}
+		
+		if(isBlack() && position<4) setKing();
+		if(isRed() && position>27) setKing();
 	}
 	
 	public CheckerPiece(CheckerPiece input){
@@ -51,9 +56,19 @@ public class CheckerPiece {
 	
 	public void setKing(){
 		
-		if(!black) type = 'Q';
-		if(black) type = 'K';
-		king = true;
+		if(isRed()){ 
+			
+			king = true;
+			type = 'Q';
+		}
+		
+		if(isBlack()){ 
+			
+			king = true;
+			type = 'K';
+		}
+		
+		//else System.out.println("WRONGG!!!");
 	}
 	
 	public boolean isKing(){
@@ -80,5 +95,10 @@ public class CheckerPiece {
 		
 		if(isKing()) return 4;
 		else return 2;
+	}
+	
+	public void print(){
+		
+		System.out.println(type);
 	}
 }

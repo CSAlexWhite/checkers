@@ -26,11 +26,12 @@ public class Main extends Application {
 		//launch(args);
 											//01234567890123456789012345678901	
 		CheckerBoard test = new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
-		//CheckerBoard test = new CheckerBoard("OOOOOOOOO O X    O O XXXXXXXXXXX");
+		//CheckerBoard test = new CheckerBoard("KKKKKKKKKKKKK       QQQQQQQQQQQQ");
+		//CheckerBoard test = new CheckerBoard("K                   OO    K     ");
 		//CheckerBoard test = new CheckerBoard("XX OO XX OO XX OO XX OO XX OO XX");
 		test.printBoard(0,0);
 		//test.printPositions();
-		test.getChildren(0);
+		//test.getChildren(0);
 	}
 	
 	public static class globals{
