@@ -25,14 +25,32 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		//launch(args);
 											//01234567890123456789012345678901	
-		//CheckerBoard test = new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
+		//CheckerBoard test = new CheckerBoard("    OO      X O  O        OO    ");
+		CheckerBoard test = new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
 		//CheckerBoard test = new CheckerBoard("KKKKKKKKKKKKK       QQQQQQQQQQQQ");
-		CheckerBoard test = new CheckerBoard("    XXXX                OOOO    ");
+		//printPositions();
+		//CheckerBoard test = new CheckerBoard("    XXXX                OOOO    ");
 		//CheckerBoard test = new CheckerBoard("K                   OO    K     ");
 		//CheckerBoard test = new CheckerBoard("XX OO XX OO XX OO XX OO XX OO XX");
 		test.printBoard(0,0);
 		//test.printPositions();
 		//test.getChildren(0);
+	}
+	
+	public static void printPositions(){
+		
+		int k = 0;
+		for(int i=0; i<8; i++){
+			for(int j=0; j<8; j++){
+				if(i%2 == j%2){ 
+					
+					System.out.print(k++ + " ");
+				}
+				else System.out.print("  ");
+			}
+			
+			System.out.println();
+		}
 	}
 	
 	public static class globals{

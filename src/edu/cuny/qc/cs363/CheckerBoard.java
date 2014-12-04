@@ -63,8 +63,8 @@ public class CheckerBoard {
 		movesList = new Stack<CheckerBoard>();		
 		
 		movesList.add(this);
-		//if(turn<1) 
-			//getChildren(turn);
+		if(turn<100) 
+			getChildren(turn);
 		//evaluate();
 	}
 		
@@ -104,6 +104,8 @@ public class CheckerBoard {
 							//System.out.println("Swapping " + currentPiece + " with " + target1);
 							kinged = move(newBoard, currentPiece, target1, false);				// SWAP PIECES
 							movesList.add(new CheckerBoard(newBoard, player)); 	// RECORD THE MOVE
+							
+//							System.out.println("Moving Back");
 							move(newBoard, target1, currentPiece, kinged);				// SWAP THEM BACK						
 							continue;
 						}
@@ -161,7 +163,8 @@ public class CheckerBoard {
 							boolean kinged = false;
 							//System.out.println("Swapping " + currentPiece + " with " + target1);
 							kinged = move(newBoard, currentPiece, target1, kinged);				// SWAP PIECES
-							movesList.add(new CheckerBoard(newBoard, player)); 	// RECORD THE MOVE
+							movesList.add(new CheckerBoard(newBoard, player)); 	// RECORD THE MOVE							
+//							System.out.println("Moving Back");
 							move(newBoard, target1, currentPiece, kinged);				// SWAP THEM BACK						
 							continue;
 						}
@@ -195,14 +198,14 @@ public class CheckerBoard {
 		
 	public void jump(int player, ArrayList<CheckerPiece> currentBoard, int previousPiece, int currentPiece, boolean justKinged){ 
 		
-		System.out.println("Jumping!");
+		//System.out.println("Jumping!");
 		
 		if(player%2 == 0){
 
 			int target1, target2;		
 			CheckerPiece targetSquare;
 			movesList.add(new CheckerBoard(currentBoard, player));				// BOARD WITH THIS CAPTURE GOES ON THE STACK
-			move(currentBoard, previousPiece, jump, justKinged);
+			move(currentBoard, jump, previousPiece, justKinged);
 			
 			for(int neighbor=0; neighbor<currentBoard.get(currentPiece).numNeighbors(); neighbor++){
 				
@@ -226,7 +229,7 @@ public class CheckerBoard {
 						boolean kinged = false;
 						System.out.println("What now?");
 						currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE
-						kinged = move(currentBoard, jump, currentPiece, false);					// SET THE CURRENT PIECE ACROSS THE RED PIECE
+						kinged = move(currentBoard, currentPiece, jump, false);					// SET THE CURRENT PIECE ACROSS THE RED PIECE
 						jump(player, currentBoard, currentPiece, jump, kinged);			// JUMP
 					}
 					
@@ -243,7 +246,7 @@ public class CheckerBoard {
 			
 			CheckerPiece targetSquare;
 			movesList.add(new CheckerBoard(currentBoard, player));				// BOARD WITH THIS CAPTURE GOES ON THE STACK
-			move(currentBoard, previousPiece, jump, justKinged);
+			move(currentBoard, jump, previousPiece, justKinged);
 			
 			for(int neighbor=0; neighbor<currentBoard.get(currentPiece).numNeighbors(); neighbor++){
 				
@@ -268,8 +271,9 @@ public class CheckerBoard {
 						boolean kinged = false;
 						System.out.println("What now?");
 						currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE
-						kinged = move(currentBoard, jump, currentPiece, false);					// SET THE CURRENT PIECE ACROSS THE RED PIECE
-						jump(player, currentBoard, currentPiece, jump, kinged);			// JUMP
+						
+						kinged = move(currentBoard, currentPiece, jump, false);	// SET THE CURRENT PIECE ACROSS THE RED PIECE
+						jump(player, currentBoard, currentPiece, jump, kinged);	// JUMP
 					}
 					
 					else continue;
@@ -281,151 +285,140 @@ public class CheckerBoard {
 	}
 	
 	public boolean move(ArrayList<CheckerPiece> board, int from, int to, boolean justKinged){
-		
-//		if(board.get(from).isKing()) System.out.println("I'm already a king?");
-		
-		
-		/* THESE ARE FOR WHEN WE'RE MOVING INTO A FINAL SQUARE AND WE'RE NOT YET A KING */
-		if(board.get(from).isRed() 
-				&& to<4 
-				&& !board.get(from).isKing()){ // DOESN'T MATTER IF WE RE-KING
-	
-			System.out.println("Moving from " + from + " to " + to);
-			System.out.println("SHOULD KING!");
 			
-			board.get(from).setEmpty();
-			board.get(to).setRed();
-			board.get(to).setKing();
+		if(!board.get(from).isKing()){
+			if(board.get(from).isBlack()){
+				
+				if(to>27){ // DOESN'T MATTER IF WE RE-KING
+					
+//					System.out.println("Moving from " + from + " to " + to);
+//					System.out.println("SHOULD KING!");
+					
+					board.get(from).setEmpty();
+					board.get(to).setBlack();
+					board.get(to).setKing();					
+					return true;
+				}
+			
+				if(to<28){ 
+				
+//					System.out.println("Moving from " + from + " to " + to);
+//					System.out.println("SHOULDN'T KING!");
+					
+					board.get(from).setEmpty();
+					board.get(to).setBlack();		
+					return false;
+				}			
+			}
+																				
+			if(board.get(from).isRed()){
+			
+				if(to<4){ // DOESN'T MATTER IF WE RE-KING
 		
-			return true;
+//					System.out.println("Moving from " + from + " to " + to);
+//					System.out.println("SHOULD KING!");
+					
+					board.get(from).setEmpty();
+					board.get(to).setRed();
+					board.get(to).setKing();				
+					return true;
+				}
+
+				if(to>3){ 
+				
+//					System.out.println("Moving from " + from + " to " + to);
+//					System.out.println("SHOULDN'T KING!");
+					
+					board.get(from).setEmpty();
+					board.get(to).setRed();
+					return false;
+				}
+			}
 		}
-		
-		else if(board.get(from).isBlack() 
-				&& to>27 
-				&& !board.get(from).isKing()){ // DOESN'T MATTER IF WE RE-KING
+
+		if(board.get(from).isKing()){
+			
+			if(board.get(from).isBlack()){ 
+					
+				if(to<28){ 
+				
+					if(justKinged){
 						
-			System.out.println("Moving from " + from + " to " + to);
-			System.out.println("SHOULD KING!");
-			
-			board.get(from).setEmpty();
-			board.get(to).setBlack();
-			board.get(to).setKing();
-			
-			return true;
-		}
-		
-		/* THESE ARE FOR WHEN WE'RE MOVING OUT OF A FINAL SQUARE AND WE'RE A KING */
-		else if(board.get(from).isRed() 
-				&& to>3 
-				&& board.get(from).isKing()){ 
-			
-			if(justKinged){
+//						System.out.println("Moving from " + from + " to " + to);
+//						System.out.println("RETURNING TO NORMAL!");
+						
+						board.get(from).setEmpty();
+						board.get(to).setBlack();
+						board.get(to).unKing();
+						return false;
+					}
+					
+					else {
+						
+//						System.out.println("Moving from " + from + " to " + to);
+//						System.out.println("STAYING A KING!");
+						
+						board.get(from).setEmpty();
+						board.get(to).setBlack();
+						board.get(to).setKing();
+						return false;
+					}
+				}
 				
-				System.out.println("Moving from " + from + " to " + to);
-				System.out.println("RETURNING TO NORMAL!");
+				if(to>27){ 
 				
-				board.get(from).setEmpty();
-				board.get(to).setRed();
-				board.get(to).unKing();
-			}
-			
-			else {
-				
-				System.out.println("Moving from " + from + " to " + to);
-				System.out.println("STAYING A KING");
-				
-				board.get(from).setEmpty();
-				board.get(to).setRed();
-				board.get(to).setKing();
+//					System.out.println("Moving from " + from + " to " + to);
+//					System.out.println("ALREADY A KING!");
+					
+					board.get(from).setEmpty();
+					board.get(to).setBlack();
+					board.get(to).setKing();	
+					return false;
+				}
 			}
 		
-			return false;
-		}
-		
-		else if(board.get(from).isBlack() 
-				&& to<27 
-				&& board.get(from).isKing()){ 
+			if(board.get(from).isRed()){ 
+				
+				if(to>3){ 
 			
-			if(justKinged){
-				
-				System.out.println("Moving from " + from + " to " + to);
-				System.out.println("RETURNING TO NORMAL!");
-				
-				board.get(from).setEmpty();
-				board.get(to).setBlack();
-				board.get(to).unKing();
+					if(justKinged){
+						
+//						System.out.println("Moving from " + from + " to " + to);
+//						System.out.println("RETURNING TO NORMAL!");
+						
+						board.get(from).setEmpty();
+						board.get(to).setRed();
+						board.get(to).unKing();
+						return false;
+					}
+					
+					else {
+						
+//						System.out.println("Moving from " + from + " to " + to);
+//						System.out.println("STAYING A KING");
+						
+						board.get(from).setEmpty();
+						board.get(to).setRed();
+						board.get(to).setKing();
+						return false;
+					}
+				}								
+		
+				if(to<4){ 
+			
+//					System.out.println("Moving from " + from + " to " + to);
+//					System.out.println("ALREADY A KING!");
+					
+					board.get(from).setEmpty();
+					board.get(to).setRed();
+					board.get(to).setKing();		
+					return false;
+				}	
 			}
-			
-			else {
-				
-				System.out.println("Moving from " + from + " to " + to);
-				System.out.println("STAYING A KING!");
-				
-				board.get(from).setEmpty();
-				board.get(to).setBlack();
-				board.get(to).setKing();
-			}
-			
-			return false;
-		}
-		
-		/* THESE ARE FOR WHEN WERE MOVING TO A MIDDLE SQUARE AND WE'RE NOT A KING */
-		else if(board.get(from).isRed() 
-				&& to>3 
-				&& !board.get(from).isKing()){ 
-			
-			System.out.println("Moving from " + from + " to " + to);
-			System.out.println("SHOULDN'T KING!");
-			
-			board.get(from).setEmpty();
-			board.get(to).setRed();
-
-			return false;
-		}
-		
-		else if(board.get(from).isBlack() 
-				&& to<28 
-				&& !board.get(from).isKing()){ 
-			
-			System.out.println("Moving from " + from + " to " + to);
-			System.out.println("SHOULDN'T KING!");
-			
-			board.get(from).setEmpty();
-			board.get(to).setBlack();
-
-			return false;
-		}
-		
-		/* THESE ARE FOR WHEN WE'RE MOVING TO A MIDDLE SQUARE AND WE ARE A KING */
-		else if(board.get(from).isRed() 
-				&& to>3 
-				&& board.get(from).isKing()){ 
-			
-			System.out.println("Moving from " + from + " to " + to);
-			System.out.println("ALREADY A KING!");
-			
-			board.get(from).setEmpty();
-			board.get(to).setRed();
-			board.get(to).setKing();
-
-			return false;
-		}
-		
-		else if(board.get(from).isBlack() 
-			 	&& to<28 
-			 	&& board.get(from).isKing()){ 
-			
-			System.out.println("Moving from " + from + " to " + to);
-			System.out.println("ALREADY A KINGERRR!");
-			
-			board.get(from).setEmpty();
-			board.get(to).setBlack();
-			board.get(to).setKing();
-
-			return false;
 		}
 	
-		System.out.println("WE'RE MISSING A CASE");
+		System.out.println("Moved from " + from + " to " + to);
+		//System.out.println("WE'RE MISSING A CASE");
 		return false;
 	}
 	
@@ -475,10 +468,9 @@ public class CheckerBoard {
 	
 	public void printBoard(int turn, int number){
 		
-		if(turn%2==0) System.out.println("\n       Black ");
-		if(turn%2==1) System.out.println("\n       Red ");
-		System.out.println("       Move " + number);
-		System.out.println("       Turn " + turn);
+		if(turn%2==0) System.out.println("\n     Black Moves ");
+		if(turn%2==1) System.out.println("\n     Red Moves");
+		System.out.println("  Turn " + turn  + " Choice " + number);
 		System.out.println("  ---------------");
 		int position = 0;
 		for(int i=0; i<8; i++){
