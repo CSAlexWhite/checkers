@@ -1,7 +1,6 @@
 package edu.cuny.qc.cs363;
 
 import java.util.ArrayList;
-import java.util.Stack;
 import java.util.Vector;
 
 public class CheckerBoard { 
@@ -11,30 +10,11 @@ public class CheckerBoard {
 	static int[][] black_adjacence;
 	static int[][] red_adjacence;
 	
-	Vector<CheckerBoard> movesList;
-	int possibleMoves;
-	int myValue;
-	int boardPlayer;
-	
-	String moveFromLast, tempMove;
-	
-	int turn, jumpFrom;
-
 	ArrayList<CheckerPiece> board; 
 	
-	/**
-	 * Starting Board
-	 */
-//	public CheckerBoard(){
-//		
-//		moveFromLast = "Opening Board";
-//		board = new ArrayList<CheckerPiece>();
-//		for(int i=0; i<32; i++) board.add(new CheckerPiece('0'));
-//		black_adjacence = Main.globals.BLACK_ADJACENCE;
-//		red_adjacence = Main.globals.RED_ADJACENCE;
-//		movesList = new Stack<CheckerBoard>();
-//		turn = -1;
-//	}
+	int possibleMoves, myValue, boardPlayer, turn, jumpFrom;
+	
+	String moveFromLast, tempMove;
 	
 	/**
 	 * 
@@ -51,7 +31,6 @@ public class CheckerBoard {
 		
 		black_adjacence = Main.globals.BLACK_ADJACENCE;
 		red_adjacence = Main.globals.RED_ADJACENCE;
-		movesList = new Stack<CheckerBoard>();		
 	}
 	
 	public CheckerBoard(ArrayList<CheckerPiece> inputBoard, int turn, String move){
@@ -62,14 +41,14 @@ public class CheckerBoard {
 		for(int i=0; i<32; i++) board.add(new CheckerPiece(inputBoard.get(i)));
 		
 		black_adjacence = Main.globals.BLACK_ADJACENCE;
-		red_adjacence = Main.globals.RED_ADJACENCE;
-		movesList = new Stack<CheckerBoard>();		
+		red_adjacence = Main.globals.RED_ADJACENCE;	
 		
 		myValue = evaluate();
 	}
 			
 	public Vector<CheckerBoard> getChildren(int player){
-			
+		
+		Vector<CheckerBoard> movesList = new Vector<CheckerBoard>();		
 		boardPlayer = player;
 		if(player == 0){
 			
@@ -120,9 +99,10 @@ public class CheckerBoard {
 									jumpFrom = currentPiece;
 									boolean kinged = false;
 									kinged = move(newBoard, currentPiece, jump, false);
+									move(newBoard, jump, currentPiece, kinged);
 									tempMove = "Black captured " + target1;
 									newBoard.get(target1).setEmpty();			// REMOVE RED PIECE, TRACK CAPTURED PIECES?
-									jump(player, newBoard, currentPiece, jump, kinged);	// JUMP!
+									jump(player, newBoard, movesList, currentPiece, jump, kinged);	// JUMP!
 								}
 							}
 							
@@ -179,9 +159,10 @@ public class CheckerBoard {
 									jumpFrom = currentPiece;
 									boolean kinged = false;
 									kinged = move(newBoard, currentPiece, jump, false);
+									move(newBoard, jump, currentPiece, kinged);
 									tempMove += "Red captured " + target1;
 									newBoard.get(target1).setEmpty();			// REMOVE RED PIECE, TRACK CAPTURED PIECES?
-									jump(player, newBoard, currentPiece, jump, kinged);				// JUMP!
+									jump(player, newBoard, movesList, currentPiece, jump, kinged);				// JUMP!
 								}
 							}
 							
@@ -189,24 +170,28 @@ public class CheckerBoard {
 						}
 					} // FOR NEIGHBORS		
 				} // IF OUR PIECE 
-			} // FOR ALL SQUARES			
-		}
+			} // FOR ALL SQUARES
+		}	
 		
+		possibleMoves = movesList.size();
 		return movesList;
-		
 //		int boardNo = 1; 
 //		for(int i=0; i<movesList.size(); i++) movesList.get(i).printBoard(player, boardNo++);
 	}
 	
-	public void jump(int player, ArrayList<CheckerPiece> currentBoard, int previousPiece, int currentPiece, boolean justKinged){ 
+	public void jump(int player, ArrayList<CheckerPiece> newBoard, Vector<CheckerBoard> movesList, int previousPiece, int currentPiece, boolean justKinged){ 
 		
 //		System.out.println("Jumping!");
 		if(player == 0){
 
 			int target1, target2;		
 			CheckerPiece jumpingSquare, targetSquare;
+			
+			ArrayList<CheckerPiece> currentBoard = new ArrayList<CheckerPiece>(32);	// CLONE THE CURRENT BOARD				
+			for(int square=0; square<32; square++) currentBoard.add(new CheckerPiece(newBoard.get(square)));
+
 			tempMove += " by jumping from " + jumpFrom + " to " + currentPiece;
-			movesList.add(new CheckerBoard(currentBoard, player, tempMove));				// BOARD WITH THIS CAPTURE GOES ON THE STACK
+			//movesList.add(new CheckerBoard(currentBoard, player, tempMove));				// BOARD WITH THIS CAPTURE GOES ON THE STACK
 			//move(currentBoard, currentPiece, previousPiece, justKinged);
 			
 			for(int neighbor=0; neighbor<currentBoard.get(currentPiece).numNeighbors(); neighbor++){
@@ -227,20 +212,16 @@ public class CheckerBoard {
 				if(jumpingSquare.isRed()){										// IF THE TARGET SQUARE IS OCCUPIED BY A RED PIECE
 
 					int jump = target2;					
-					if(targetSquare.isEmpty()){						// AND THERE'S A SPACE ON THE OTHER SIDE OF IT
 						
-						tempMove += " then captured " + target1;
-						currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE
-						move(currentBoard, currentPiece, jump, justKinged);					// SET THE CURRENT PIECE ACROSS THE RED PIECE
-						jump(player, currentBoard, currentPiece, jump, justKinged);			// JUMP
-					}
-					
-					else continue;
+					tempMove += " then captured " + target1;
+					currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE
+																			// SET THE CURRENT PIECE ACROSS THE RED PIECE
+					jump(player, currentBoard, movesList, currentPiece, jump, justKinged);			// JUMP
 				}					
 			}	
 			
-//			movesList.add(new CheckerBoard(currentBoard, player, tempMove));
-			move(currentBoard, currentPiece, previousPiece, justKinged);
+			movesList.add(new CheckerBoard(currentBoard, player, tempMove));
+			move(currentBoard, previousPiece, currentPiece, justKinged);
 			return;
 		}
 		
@@ -248,8 +229,12 @@ public class CheckerBoard {
 			
 			int target1, target2;			
 			CheckerPiece jumpingSquare, targetSquare;
+			
+			ArrayList<CheckerPiece> currentBoard = new ArrayList<CheckerPiece>(32);	// CLONE THE CURRENT BOARD				
+			for(int square=0; square<32; square++) currentBoard.add(new CheckerPiece(newBoard.get(square)));
+			
 			tempMove += " by jumping from " + jumpFrom + " to " + currentPiece;
-			movesList.add(new CheckerBoard(currentBoard, player, tempMove));				// BOARD WITH THIS CAPTURE GOES ON THE STACK
+			//movesList.add(new CheckerBoard(currentBoard, player, tempMove));				// BOARD WITH THIS CAPTURE GOES ON THE LIST
 			//move(currentBoard, currentPiece, previousPiece, justKinged);
 			
 			for(int neighbor=0; neighbor<currentBoard.get(currentPiece).numNeighbors(); neighbor++){
@@ -271,20 +256,16 @@ public class CheckerBoard {
 				if(jumpingSquare.isBlack()){										// IF THE TARGET SQUARE IS OCCUPIED BY A RED PIECE
 					
 					int jump = target2;					
-					if(targetSquare.isEmpty()){						// AND THERE'S A SPACE ON THE OTHER SIDE OF IT
-						
-						tempMove += " then captured " + target1;
-						currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE						
-						move(currentBoard, currentPiece, jump, justKinged);	// SET THE CURRENT PIECE ACROSS THE RED PIECE
-						jump(player, currentBoard, currentPiece, jump, justKinged);	// JUMP
-					}
-					
-					else continue;
+										
+					tempMove += " then captured " + target1;
+					currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE						
+																			// SET THE CURRENT PIECE ACROSS THE RED PIECE
+					jump(player, currentBoard, movesList, currentPiece, jump, justKinged);	// JUMP
 				}					
 			}	
 			
-//			movesList.add(new CheckerBoard(currentBoard, player, tempMove));
-			move(currentBoard, currentPiece, previousPiece, justKinged);
+			movesList.add(new CheckerBoard(currentBoard, player, tempMove));
+			move(currentBoard, previousPiece, currentPiece, justKinged);
 			return;
 		}
 	}
@@ -442,7 +423,7 @@ public class CheckerBoard {
 			}
 		}
 			
-		value += movesList.size();
+		value += possibleMoves;
 		
 		// ideas: more possible moves is good, less middle board space is better
 		return value;
