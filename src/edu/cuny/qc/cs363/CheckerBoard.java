@@ -79,7 +79,7 @@ public class CheckerBoard {
 				if(board.get(currentPiece).isEmpty()) continue; 				// IF THE SPACE IS EMPTY, KEEP GOING
 				
 				ArrayList<CheckerPiece> newBoard = new ArrayList<CheckerPiece>(32);	// CLONE THE CURRENT BOARD				
-				for(int square=0; square<32; square++) newBoard.add(board.get(square));
+				for(int square=0; square<32; square++) newBoard.add(new CheckerPiece(board.get(square)));
 				
 				if(newBoard.get(currentPiece).isBlack()){			 			// IF MY PIECE OCCUPIES THE SPACE		
 										
@@ -141,7 +141,7 @@ public class CheckerBoard {
 				if(board.get(currentPiece).isEmpty()) continue; 				// IF THE SPACE IS EMPTY, KEEP GOING
 				
 				ArrayList<CheckerPiece> newBoard = new ArrayList<CheckerPiece>(32);	// CLONE THE CURRENT BOARD			
-				for(int square=0; square<32; square++) newBoard.add(board.get(square));
+				for(int square=0; square<32; square++) newBoard.add(new CheckerPiece(board.get(square)));
 				
 				if(newBoard.get(currentPiece).isRed()){			 				// IF MY PIECE OCCUPIES THE SPACE		
 									
