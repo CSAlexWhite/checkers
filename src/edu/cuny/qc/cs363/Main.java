@@ -1,12 +1,28 @@
 package edu.cuny.qc.cs363;
 	
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 
 public class Main extends Application {
+	
+	@FXML Button s0;
+	Image wood;
+	ImageView woodView;
+	
+	static Player player1;
+	static Player player2;
+	static Game game;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -14,27 +30,67 @@ public class Main extends Application {
 		try {
 			
 			GridPane root = (GridPane)FXMLLoader.load(getClass().getResource("GUI.fxml"));
-			Scene scene = new Scene(root,400,400);
+			Scene scene = new Scene(root,800,800);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			
+			s0 = new Button();
+			//redPiece = new Image(getClass().getResourceAsStream("redpiece2.png"));
+			wood = new Image(getClass().getResourceAsStream("darksquare.png"));
+			
+		//	redView = new ImageView(redPiece);
+			woodView = new ImageView(wood);
+			//
+			//setPieces();
+			
+			s0.setGraphic(woodView);
+			
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			
 		} catch(Exception e) {e.printStackTrace();}
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		//launch(args);
-											//01234567890123456789012345678901	
-		//CheckerBoard test = new CheckerBoard("    OO      X O  O        OO    ");
-		CheckerBoard test = new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
-		//CheckerBoard test = new CheckerBoard("KKKKKKKKKKKKK       QQQQQQQQQQQQ");
-		//printPositions();
-		//CheckerBoard test = new CheckerBoard("    XXXX                OOOO    ");
-		//CheckerBoard test = new CheckerBoard("K                   OO    K     ");
-		//CheckerBoard test = new CheckerBoard("XX OO XX OO XX OO XX OO XX OO XX");
-		test.printBoard(0,0);
-		//test.printPositions();
-		//test.getChildren(0);
+		
+		game = new Game();
+		
+		player1 = new Player(0);
+		player2 = new Player(1);
+		
+		CheckerBoard tempBoard = player1.move(game.currentBoard);
+		game.add(tempBoard);
+		
+		while(tempBoard != null){
+			
+			game.add(tempBoard = player2.move(tempBoard));
+			game.add(tempBoard = player1.move(tempBoard));
+		}
+		
+		game.printHistory();
+		
+		
+//		String temp = null;
+//		while(temp != "exit"){
+//			//01234567890123456789012345678901	
+//		//CheckerBoard test = new CheckerBoard("    OO      X O  O        OO    ");
+//		CheckerBoard test = new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
+//		//CheckerBoard test = new CheckerBoard("KKKKKKKKKKKKK       QQQQQQQQQQQQ");
+//		//printPositions();
+//		//CheckerBoard test = new CheckerBoard("    XXXX                OOOO    ");
+//		//CheckerBoard test = new CheckerBoard("K                   OO    K     ");
+//		//CheckerBoard test = new CheckerBoard("XX OO XX OO XX OO XX OO XX OO XX");
+//		test.printBoard(0,0);
+//					
+//			InputStreamReader sreader = new InputStreamReader(System.in);
+//			BufferedReader reader = new BufferedReader(sreader);
+//			temp = reader.readLine();
+//			
+//			//test.printPositions();
+//			test.getChildren(0);
+//			test = test.movesList.get(Integer.parseInt(temp));
+//		}
+		
 	}
 	
 	public static void printPositions(){
