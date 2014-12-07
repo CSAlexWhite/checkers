@@ -64,8 +64,6 @@ public class CheckerPiece {
 			king = true;
 			type = 'K';
 		}
-		
-		//else System.out.println("WRONGG!!!");
 	}
 	
 	public void unKing(){

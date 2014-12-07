@@ -67,7 +67,7 @@ public class Main extends Application {
 			game.add(tempBoard = player2.move(tempBoard));
 			game.add(tempBoard = player1.move(tempBoard));
 			
-			if(move++ >50) break;
+			if(move++ >200) break;
 		}
 		
 		game.printHistory();
