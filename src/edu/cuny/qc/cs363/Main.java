@@ -61,10 +61,13 @@ public class Main extends Application {
 		CheckerBoard tempBoard = player1.move(game.currentBoard);
 		game.add(tempBoard);
 		
+		int move = 0;
 		while(tempBoard != null){
 			
 			game.add(tempBoard = player2.move(tempBoard));
 			game.add(tempBoard = player1.move(tempBoard));
+			
+			if(move++ >50) break;
 		}
 		
 		game.printHistory();

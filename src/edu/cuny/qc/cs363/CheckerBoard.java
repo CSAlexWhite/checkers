@@ -18,7 +18,7 @@ public class CheckerBoard {
 	
 	String moveFromLast, tempMove;
 	
-	int turn;
+	int turn, jumpFrom;
 
 	ArrayList<CheckerPiece> board; 
 	
@@ -117,6 +117,7 @@ public class CheckerBoard {
 								int jump = target2;
 								if(newBoard.get(jump).isEmpty()){				// AND THE PIECE ACROSS IS EMPTY
 									
+									jumpFrom = currentPiece;
 									boolean kinged = false;
 									kinged = move(newBoard, currentPiece, jump, false);
 									tempMove = "Black captured " + target1;
@@ -175,6 +176,7 @@ public class CheckerBoard {
 								int jump = target2;			
 								if(newBoard.get(jump).isEmpty()){				// AND THE PIECE ACROSS IS EMPTY
 									
+									jumpFrom = currentPiece;
 									boolean kinged = false;
 									kinged = move(newBoard, currentPiece, jump, false);
 									tempMove += "Red captured " + target1;
@@ -195,18 +197,17 @@ public class CheckerBoard {
 //		int boardNo = 1; 
 //		for(int i=0; i<movesList.size(); i++) movesList.get(i).printBoard(player, boardNo++);
 	}
-		
+	
 	public void jump(int player, ArrayList<CheckerPiece> currentBoard, int previousPiece, int currentPiece, boolean justKinged){ 
 		
 //		System.out.println("Jumping!");
-		
 		if(player == 0){
 
 			int target1, target2;		
-			CheckerPiece targetSquare;
-			tempMove += " by jumping from " + previousPiece + " to " + currentPiece;
+			CheckerPiece jumpingSquare, targetSquare;
+			tempMove += " by jumping from " + jumpFrom + " to " + currentPiece;
 			movesList.add(new CheckerBoard(currentBoard, player, tempMove));				// BOARD WITH THIS CAPTURE GOES ON THE STACK
-			move(currentBoard, currentPiece, previousPiece, justKinged);
+			//move(currentBoard, currentPiece, previousPiece, justKinged);
 			
 			for(int neighbor=0; neighbor<currentBoard.get(currentPiece).numNeighbors(); neighbor++){
 				
@@ -216,39 +217,40 @@ public class CheckerBoard {
 				target2 = black_adjacence[target1][neighbor];					// TARGET2 IS THE NEIGHBORS'S NEIGHBOR			
 				if(target2 == -1) continue;										// KEEP GOING WHEN YOU CAN'T MOVE THERE
 				
+				jumpingSquare = currentBoard.get(target1);
 				targetSquare = currentBoard.get(target2);						// LOOK AT AN AVAILABLE MOVE
 				
-				if(targetSquare.isBlack()) continue;							// IF OUR PIECE IS IN THE WAY																				// IGNORE THIS SPACE KEEP GOING
+				if(!targetSquare.isEmpty()) continue;							// IF OUR PIECE IS IN THE WAY																				// IGNORE THIS SPACE KEEP GOING
 				
-				if(targetSquare.isEmpty()) continue;							// IF SPACE IS EMPTY AND WE'RE NOT JUMPING
-										
-				if(targetSquare.isRed()){										// IF THE TARGET SQUARE IS OCCUPIED BY A RED PIECE
-					
+				if(jumpingSquare.isBlack()) continue;							// IF SPACE IS EMPTY AND WE'RE NOT JUMPING
+			
+				if(jumpingSquare.isRed()){										// IF THE TARGET SQUARE IS OCCUPIED BY A RED PIECE
+
 					int jump = target2;					
-					if(currentBoard.get(jump).isEmpty()){						// AND THERE'S A SPACE ON THE OTHER SIDE OF IT
+					if(targetSquare.isEmpty()){						// AND THERE'S A SPACE ON THE OTHER SIDE OF IT
 						
-						boolean kinged = false;
-						System.out.println("What now?");
+						tempMove += " then captured " + target1;
 						currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE
-						kinged = move(currentBoard, currentPiece, jump, false);					// SET THE CURRENT PIECE ACROSS THE RED PIECE
-						jump(player, currentBoard, currentPiece, jump, kinged);			// JUMP
+						move(currentBoard, currentPiece, jump, justKinged);					// SET THE CURRENT PIECE ACROSS THE RED PIECE
+						jump(player, currentBoard, currentPiece, jump, justKinged);			// JUMP
 					}
 					
 					else continue;
 				}					
 			}	
 			
+//			movesList.add(new CheckerBoard(currentBoard, player, tempMove));
+			move(currentBoard, currentPiece, previousPiece, justKinged);
 			return;
 		}
 		
 		if(player == 1){
 			
-			int target1, target2;
-			
-			CheckerPiece targetSquare;
-			tempMove += " by jumping from " + previousPiece + " to " + currentPiece;
+			int target1, target2;			
+			CheckerPiece jumpingSquare, targetSquare;
+			tempMove += " by jumping from " + jumpFrom + " to " + currentPiece;
 			movesList.add(new CheckerBoard(currentBoard, player, tempMove));				// BOARD WITH THIS CAPTURE GOES ON THE STACK
-			move(currentBoard, currentPiece, previousPiece, justKinged);
+			//move(currentBoard, currentPiece, previousPiece, justKinged);
 			
 			for(int neighbor=0; neighbor<currentBoard.get(currentPiece).numNeighbors(); neighbor++){
 				
@@ -259,29 +261,30 @@ public class CheckerBoard {
 				
 				if(target2 == -1) continue;										// KEEP GOING WHEN YOU CAN'T MOVE THERE
 				
+				jumpingSquare = currentBoard.get(target1);
 				targetSquare = currentBoard.get(target2);						// LOOK AT AN AVAILABLE MOVE
 				
-				if(targetSquare.isRed()) continue;								// IF OUR PIECE IS IN THE WAY																				// IGNORE THIS SPACE KEEP GOING
+				if(!targetSquare.isEmpty()) continue;								// IF OUR PIECE IS IN THE WAY																				// IGNORE THIS SPACE KEEP GOING
 				
-				if(targetSquare.isEmpty()) continue;							// IF SPACE IS EMPTY AND WE'RE NOT JUMPING
+				if(jumpingSquare.isRed()) continue;							// IF SPACE IS EMPTY AND WE'RE NOT JUMPING
 										
-				if(targetSquare.isBlack()){										// IF THE TARGET SQUARE IS OCCUPIED BY A RED PIECE
+				if(jumpingSquare.isBlack()){										// IF THE TARGET SQUARE IS OCCUPIED BY A RED PIECE
 					
 					int jump = target2;					
-					if(currentBoard.get(jump).isEmpty()){						// AND THERE'S A SPACE ON THE OTHER SIDE OF IT
+					if(targetSquare.isEmpty()){						// AND THERE'S A SPACE ON THE OTHER SIDE OF IT
 						
-						boolean kinged = false;
-						System.out.println("What now?");
-						currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE
-						
-						kinged = move(currentBoard, currentPiece, jump, false);	// SET THE CURRENT PIECE ACROSS THE RED PIECE
-						jump(player, currentBoard, currentPiece, jump, kinged);	// JUMP
+						tempMove += " then captured " + target1;
+						currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE						
+						move(currentBoard, currentPiece, jump, justKinged);	// SET THE CURRENT PIECE ACROSS THE RED PIECE
+						jump(player, currentBoard, currentPiece, jump, justKinged);	// JUMP
 					}
 					
 					else continue;
 				}					
 			}	
 			
+//			movesList.add(new CheckerBoard(currentBoard, player, tempMove));
+			move(currentBoard, currentPiece, previousPiece, justKinged);
 			return;
 		}
 	}

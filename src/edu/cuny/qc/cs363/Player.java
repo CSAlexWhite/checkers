@@ -20,7 +20,7 @@ public class Player {
 	}
 	
 	public CheckerBoard move(CheckerBoard inBoard){
-		
+
 		int bestScore = 0, bestChoice = 0;
 		CheckerBoard bestBoard = null;
 		
