@@ -91,6 +91,16 @@ public class CheckerPiece {
 		return !empty && !black;
 	}
 	
+	public boolean isRedKing(){
+		
+		return !empty && !black && king;
+	}
+	
+	public boolean isBlackKing(){
+		
+		return !empty && black && king;
+	}
+	
 	public int numNeighbors(){
 		
 		if(isKing()) return 4;
