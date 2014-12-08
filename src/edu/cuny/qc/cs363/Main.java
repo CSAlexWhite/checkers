@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Random;
 
+import javafx.concurrent.Task;
+
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -17,61 +20,186 @@ import javafx.fxml.FXMLLoader;
 
 public class Main extends Application {
 	
-	@FXML Button s0;
-	Image wood;
-	ImageView woodView;
-	
 	static Player player1;
 	static Player player2;
 	static Game game;
+	static GUIController gameBoard;
 	
 	@Override
 	public void start(Stage primaryStage) {
 		
 		try {
+					
+			FXMLLoader fxmlloader = new FXMLLoader();
+			fxmlloader.setLocation(getClass().getResource("GUI.fxml"));
+									
+			GridPane root = fxmlloader.load();//(GridPane)FXMLLoader.load(getClass().getResource("GUI.fxml"));
 			
-			GridPane root = (GridPane)FXMLLoader.load(getClass().getResource("GUI.fxml"));
 			Scene scene = new Scene(root,800,800);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			
-			s0 = new Button();
-			//redPiece = new Image(getClass().getResourceAsStream("redpiece2.png"));
-			wood = new Image(getClass().getResourceAsStream("darksquare.png"));
-			
-		//	redView = new ImageView(redPiece);
-			woodView = new ImageView(wood);
-			//
-			//setPieces();
-			
-			s0.setGraphic(woodView);
 			
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			
+			gameBoard = (GUIController) fxmlloader.getController();
+////			System.out.println(gameBoard);
+//			//gameBoard.setup(game.currentBoard);
+//			//game = new Game();
+//
+//			
+//			
+//			
+//		      Platform.runLater(new Runnable() {
+//			        @Override
+//			        public void run() {
+//			        	
+//			        	gameBoard.begin();
+//			          
+//			        }
+//			      });			
+			
+						
+			
+//			Game game = new Game(){
+//				
+//				@Override protected Game call() throws Exception{
+//					
+//					
+//				}
+//			};		
+//
+//			Task task = new Task<Void>() {
+//				  @Override
+//				  public Void call() throws Exception {
+//				    int i = 0;
+//				    while (true) {
+//				      final int finalI = i;
+//
+//				      i++;
+//				      Thread.sleep(1000);
+//				    }
+//				  }
+//				};
+//				Thread th = new Thread(task);
+//				th.setDaemon(true);
+//				th.start();
+//			
+//			Task task = new Task<Void>() {
+//				
+//			    @Override public Void call() {
+//			    	
+//			        static final int max = 1000000;
+//			        
+//			        for (int i=1; i<=max; i++) {
+//			            if (isCancelled()) {
+//			               break;
+//			            }
+//			            updateProgress(i, max);
+//			        }
+//			        return null;
+//			    }
+//			};
+//			
+//			ProgressBar bar = new ProgressBar();
+//			bar.progressProperty().bind(task.progressProperty());
+//			new Thread(task).start();
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+//			Platform.runLater(new Runnable(){
+//
+//				@Override
+//				public void run() {
+//					
+//					game.thisThread.start();
+//					gameBoard.setup(game.currentBoard);
+//					
+//				}							
+//			});
+		
+//			CheckerBoard tempBoard = player1.move(game.currentBoard);
+//			gameBoard.setup(tempBoard);	
+//			game.add(tempBoard);
+//			
+//			int move = 0;
+//			while(tempBoard != null){
+//				
+//				Thread.sleep(1000);
+//							
+//				Platform.runLater(new Runnable() {
+//					
+//				    @Override
+//				    public void run() {
+//				    					
+//						gameBoard.setup(player2.move(game.currentBoard));
+//						primaryStage.setScene(scene);
+//						primaryStage.show();
+//				    }
+//				});
+//				
+//				game.add(tempBoard = player2.move(tempBoard));
+//				gameBoard.setup(tempBoard);
+//				
+//				//Thread.sleep(10);
+//				
+//				game.add(tempBoard = player1.move(tempBoard));
+//				gameBoard.setup(tempBoard);	
+//				
+//				//Thread.sleep(10);
+//				
+//				if(move++ >200) break;	        
+//			}							
 		} catch(Exception e) {e.printStackTrace();}
 	}
 	
+	
+	
 	public static void main(String[] args) throws IOException {
-		//launch(args);
-		
+					
 		game = new Game();
-
-		player1 = new Player(0);
-		player2 = new Player(1);
+		game.thisThread.start();
 		
-		CheckerBoard tempBoard = player1.move(game.currentBoard);
-		game.add(tempBoard);
-		
-		int move = 0;
-		while(tempBoard != null){
-			
-			game.add(tempBoard = player2.move(tempBoard));
-			game.add(tempBoard = player1.move(tempBoard));
-			
-			if(move++ >200) break;
-		}
-		
-		game.printHistory();
+//		launch(args);
+				
+//		CheckerBoard tempBoard = player1.move(game.currentBoard);
+//		gameBoard.setup(tempBoard);	
+//		game.add(tempBoard);
+//		
+//		int move = 0;
+//		while(tempBoard != null){
+//			
+//			game.add(tempBoard = player2.move(tempBoard));
+//			gameBoard.setup(tempBoard);		
+//			game.add(tempBoard = player1.move(tempBoard));
+//			gameBoard.setup(tempBoard);	
+//			
+//			if(move++ >200) break;
+//		}
+//		
+//		game.printHistory();
 		
 		
 //		String temp = null;

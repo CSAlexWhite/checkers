@@ -79,7 +79,7 @@ public class CheckerBoard {
 						if(targetSquare.isEmpty()){ 							// IF SPACE IS EMPTY AND WE'RE NOT JUMPING
 							
 							boolean kinged = false;
-							tempMove = "Black moved " + currentPiece + " to " + target1;
+							tempMove = "Black moved from " + currentPiece + " to " + target1;
 							
 							kinged = move(newBoard, currentPiece, target1, false);				// SWAP PIECES
 							movesList.add(new CheckerBoard(newBoard, player, tempMove)); 	// RECORD THE MOVE
@@ -100,7 +100,7 @@ public class CheckerBoard {
 									jumpFrom = currentPiece;
 									boolean kinged = false;
 									kinged = move(newBoard, currentPiece, jump, false);
-									move(newBoard, jump, currentPiece, kinged);
+									//move(newBoard, jump, currentPiece, kinged);
 									tempMove = "Black captured " + target1;
 									newBoard.get(target1).setEmpty();			// REMOVE RED PIECE, TRACK CAPTURED PIECES?
 									jump(player, newBoard, movesList, currentPiece, jump, kinged);	// JUMP!
@@ -160,8 +160,8 @@ public class CheckerBoard {
 									jumpFrom = currentPiece;
 									boolean kinged = false;
 									kinged = move(newBoard, currentPiece, jump, false);
-									move(newBoard, jump, currentPiece, kinged);
-									tempMove += "Red captured " + target1;
+									//move(newBoard, jump, currentPiece, kinged);
+									tempMove = "Red captured " + target1;
 									newBoard.get(target1).setEmpty();			// REMOVE RED PIECE, TRACK CAPTURED PIECES?
 									jump(player, newBoard, movesList, currentPiece, jump, kinged);				// JUMP!
 								}
@@ -216,13 +216,14 @@ public class CheckerBoard {
 						
 					tempMove += " then captured " + target1;
 					currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE
+					move(currentBoard, currentPiece, target2, justKinged);
 					myCaptures++;											// SET THE CURRENT PIECE ACROSS THE RED PIECE
 					jump(player, currentBoard, movesList, currentPiece, jump, justKinged);			// JUMP
 				}					
 			}	
 			
 			movesList.add(new CheckerBoard(currentBoard, player, tempMove));
-			move(currentBoard, previousPiece, currentPiece, justKinged);
+			//move(currentBoard, previousPiece, currentPiece, justKinged);
 			return;
 		}
 		
@@ -259,14 +260,15 @@ public class CheckerBoard {
 					int jump = target2;					
 										
 					tempMove += " then captured " + target1;
-					currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE						
+					currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE
+					move(currentBoard, currentPiece, target2, justKinged);
 					myCaptures++;														// SET THE CURRENT PIECE ACROSS THE RED PIECE
 					jump(player, currentBoard, movesList, currentPiece, jump, justKinged);	// JUMP
 				}					
 			}	
 			
 			movesList.add(new CheckerBoard(currentBoard, player, tempMove));
-			move(currentBoard, previousPiece, currentPiece, justKinged);
+			//move(currentBoard, previousPiece, currentPiece, justKinged);
 			return;
 		}
 	}
