@@ -434,7 +434,7 @@ public class CheckerBoard {
 	
 	public void printBoard(int turn){//, int number){
 
-		System.out.println("\nTurn " + turn/2);//  + " Choice " + number);
+		System.out.println("\nTurn " + turn);//  + " Choice " + number);
 		System.out.println(moveFromLast);
 		System.out.println("  ---------------");
 		int position = 0;

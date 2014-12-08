@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.util.Random;
 
 import javafx.concurrent.Task;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -41,167 +40,76 @@ public class Main extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			
+			game = new Game();
 			gameBoard = (GUIController) fxmlloader.getController();
-////			System.out.println(gameBoard);
-//			//gameBoard.setup(game.currentBoard);
-//			//game = new Game();
-//
-//			
-//			
-//			
-//		      Platform.runLater(new Runnable() {
-//			        @Override
-//			        public void run() {
-//			        	
-//			        	gameBoard.begin();
-//			          
-//			        }
-//			      });			
+			gameBoard.setup(game.currentBoard);
 			
+			//gameBoard.setup(game.nextBoard());
+			
+			Task task = new Task<Void>(){
+				
+				@Override
+				public Void call() throws Exception {
+					
+					int i=0;
+					while(true){
 						
+						final int finalI = i;
+						final CheckerBoard temp = game.currentBoard;
+						Platform.runLater(new Runnable(){
+							
+							@Override
+							public void run(){
+								
+								gameBoard.setup(game.nextBoard());
+							}
+						});
+						
+						i++;
+						Thread.sleep(1000);
+					}
+					
+				}
+			};
 			
-//			Game game = new Game(){
-//				
-//				@Override protected Game call() throws Exception{
-//					
-//					
-//				}
-//			};		
-//
-//			Task task = new Task<Void>() {
-//				  @Override
-//				  public Void call() throws Exception {
-//				    int i = 0;
-//				    while (true) {
-//				      final int finalI = i;
-//
-//				      i++;
-//				      Thread.sleep(1000);
-//				    }
-//				  }
-//				};
-//				Thread th = new Thread(task);
-//				th.setDaemon(true);
-//				th.start();
-//			
-//			Task task = new Task<Void>() {
-//				
-//			    @Override public Void call() {
-//			    	
-//			        static final int max = 1000000;
-//			        
-//			        for (int i=1; i<=max; i++) {
-//			            if (isCancelled()) {
-//			               break;
-//			            }
-//			            updateProgress(i, max);
-//			        }
-//			        return null;
-//			    }
-//			};
-//			
-//			ProgressBar bar = new ProgressBar();
-//			bar.progressProperty().bind(task.progressProperty());
-//			new Thread(task).start();
+			Thread th = new Thread(task);
+			th.setDaemon(true);
+			th.start();
 			
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-//			Platform.runLater(new Runnable(){
-//
+//			Platform.runLater(new Runnable() {
 //				@Override
 //				public void run() {
 //					
-//					game.thisThread.start();
-//					gameBoard.setup(game.currentBoard);
-//					
-//				}							
+//					gameBoard.setup(game.nextBoard());
+//					try {
+//						Thread.sleep(1000);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					gameBoard.setup(game.nextBoard());
+//				}
 //			});
-		
-//			CheckerBoard tempBoard = player1.move(game.currentBoard);
-//			gameBoard.setup(tempBoard);	
-//			game.add(tempBoard);
-//			
-//			int move = 0;
-//			while(tempBoard != null){
-//				
-//				Thread.sleep(1000);
-//							
-//				Platform.runLater(new Runnable() {
-//					
-//				    @Override
-//				    public void run() {
-//				    					
-//						gameBoard.setup(player2.move(game.currentBoard));
-//						primaryStage.setScene(scene);
-//						primaryStage.show();
-//				    }
-//				});
-//				
-//				game.add(tempBoard = player2.move(tempBoard));
-//				gameBoard.setup(tempBoard);
-//				
-//				//Thread.sleep(10);
-//				
-//				game.add(tempBoard = player1.move(tempBoard));
-//				gameBoard.setup(tempBoard);	
-//				
-//				//Thread.sleep(10);
-//				
-//				if(move++ >200) break;	        
-//			}							
+
 		} catch(Exception e) {e.printStackTrace();}
 	}
 	
-	
-	
+	public void notifyCreation() {
+
+		// All new objects are created on the JavaFX Application Thread, even if
+		// the call to this method came from another thread, such as a timing
+		// thread started by the business logic.
+		
+	}
+
 	public static void main(String[] args) throws IOException {
 					
-		game = new Game();
-		game.thisThread.start();
+		//game = new Game();
+		//game.thisThread.start();
 		
-//		launch(args);
+		launch(args);
 				
-//		CheckerBoard tempBoard = player1.move(game.currentBoard);
-//		gameBoard.setup(tempBoard);	
-//		game.add(tempBoard);
-//		
-//		int move = 0;
-//		while(tempBoard != null){
-//			
-//			game.add(tempBoard = player2.move(tempBoard));
-//			gameBoard.setup(tempBoard);		
-//			game.add(tempBoard = player1.move(tempBoard));
-//			gameBoard.setup(tempBoard);	
-//			
-//			if(move++ >200) break;
-//		}
-//		
-//		game.printHistory();
-		
-		
 //		String temp = null;
 //		while(temp != "exit"){
 //			//01234567890123456789012345678901	
@@ -221,8 +129,7 @@ public class Main extends Application {
 //			//test.printPositions();
 //			test.getChildren(0);
 //			test = test.movesList.get(Integer.parseInt(temp));
-//		}
-		
+//		}		
 	}
 	
 	public static void printPositions(){

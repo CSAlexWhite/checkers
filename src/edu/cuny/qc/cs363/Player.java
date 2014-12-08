@@ -20,6 +20,11 @@ public class Player {
 		
 	}
 	
+	public CheckerBoard move1(CheckerBoard inBoard){
+		
+		return MiniMax.minimax_decision(inBoard);
+	}
+	
 	public CheckerBoard move(CheckerBoard inBoard){
 
 		int bestScore = 0, bestChoice = 0;
@@ -43,11 +48,11 @@ public class Player {
 					break;
 				}
 			}
-			System.out.println("size: " + choices.size());
+			//System.out.println("size: " + choices.size());
 			
 			if(choices.size() == 0) return null;
 			
-			bestChoice = getRandom(0, choices.size()-2);	
+			bestChoice = getRandom(0, choices.size()-1);	
 			
 			//System.out.println("choice: " + bestChoice);
 			
@@ -74,7 +79,7 @@ public class Player {
 	public static int getRandom(int min, int max){
 		
 		rand = new Random();
-		int randomNum = rand.nextInt((max-min) + 2) + min;
+		int randomNum = rand.nextInt((max-min) + 1) + min;
 		//System.out.println(randomNum);
 		return randomNum;
 	}

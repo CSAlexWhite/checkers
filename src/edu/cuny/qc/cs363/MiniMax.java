@@ -2,7 +2,7 @@ package edu.cuny.qc.cs363;
 
 public abstract class MiniMax {
 
-	public CheckerBoard minimax_decision(CheckerBoard input){
+	public static CheckerBoard minimax_decision(CheckerBoard input){
 		
 		CheckerBoard temp = input;
 		int iteration =0;
@@ -11,10 +11,10 @@ public abstract class MiniMax {
 		return temp;		
 	}
 	
-	public int max_value(CheckerBoard input,int iteration){
+	public static int max_value(CheckerBoard input,int iteration){
 		
 		int value =-100;
-		if (input.board.isEmpty() || iteration ==7) // terminal _test ???
+		if (input.board.isEmpty() || iteration >=7) // terminal _test ???
 			return input.evaluate(); //not sure the Uttility(state)
 		else {
 			
@@ -22,15 +22,13 @@ public abstract class MiniMax {
 			//------------------???---------------------------------
 			// got throught each possible black piece move
 			
-				value=Math.max(value, min_value(input, iteration++));
-			
-			
+				value=Math.max(value, min_value(input, iteration++));				
 		}
 		
 		return value;
 		
 	}
-	public int min_value(CheckerBoard input,int iteration){
+	public static int min_value(CheckerBoard input,int iteration){
 		int value = -100;
 		// cannot be winning board 
 		if (input.possibleMoves==0)// no move move for red piece
@@ -39,8 +37,7 @@ public abstract class MiniMax {
 			input.getChildren(0);
 			for (int i=0; i<32 ;i++){ // got throught each possible black piece move
 				
-				value=Math.max(value, min_value(input, iteration++));
-			
+				value=Math.max(value, min_value(input, iteration++));		
 		     }
 		}
 		return value;

@@ -10,6 +10,7 @@ public class Game extends Task<Game>{
 	Vector<CheckerBoard> history;
 	Player p1, p2;
 	GUIController gameBoard;
+	int turn;
 	Thread thisThread;
 	
 	public Game(){
@@ -34,6 +35,17 @@ public class Game extends Task<Game>{
 		history.add(nextMove);
 	}
 
+	public CheckerBoard nextBoard(){
+		
+		turn++;
+		if(turn%2 == 0) return currentBoard = p1.move(currentBoard);
+		else return currentBoard = p2.move(currentBoard);
+		
+//		if(currentBoard.turn == 0) currentBoard = currentBoard.getChildren(0).get(0);
+//		else currentBoard = currentBoard.getChildren(1).get(0);
+//		return currentBoard;
+	}
+	
 	public void printHistory(){
 		
 		try{
@@ -50,47 +62,48 @@ public class Game extends Task<Game>{
 	@Override
 	public void run() {
 		
+	}
+
+	@Override
+	protected Game call() throws Exception {
+			
 		CheckerBoard tempBoard = p1.move(currentBoard);
 		
 		//gameBoard.setup(tempBoard);	
 		add(tempBoard);
 		
-		int move = 0;
-		while(tempBoard != null){
-			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			add(tempBoard = p2.move(tempBoard));
-			
-			tempBoard.printBoard(move);
-			//gameBoard.setup(tempBoard);
-			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			add(tempBoard = p1.move(tempBoard));
-			//gameBoard.setup(tempBoard);
-			tempBoard.printBoard(move);
-			
-			if(move++ >200) break;
-		}
+		return this;
 		
-		printHistory();		
-	}
-
-	@Override
-	protected Game call() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+//		int move = 0;
+//		while(tempBoard != null){
+//			
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//			add(tempBoard = p2.move(tempBoard));
+//			
+//			tempBoard.printBoard(move);
+//			//gameBoard.setup(tempBoard);
+//			
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//			add(tempBoard = p1.move(tempBoard));
+//			//gameBoard.setup(tempBoard);
+//			tempBoard.printBoard(move);
+//			
+//			if(move++ >200) break;
+//		}
+//		
+//		printHistory();		
 	}
 	
 }

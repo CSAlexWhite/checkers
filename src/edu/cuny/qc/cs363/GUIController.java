@@ -95,7 +95,7 @@ public class GUIController implements Initializable, Runnable{
 	
 	public void begin(){
 		
-		Game checkerGame = new Game(this);
+		Game checkerGame = new Game();
 		checkerGame.thisThread.start();
 	}
 	
