@@ -76,7 +76,7 @@ public class GUIController implements Initializable, Runnable{
 		if(count%3==1) squares[23].setGraphic(blackView[23]);		
 	}
 	
-	public void setup(CheckerBoard currentBoard){
+	public void setup(CheckerBoard currentBoard) throws NullPointerException{
 		
 		for(int i=0; i<32; i++){
 			

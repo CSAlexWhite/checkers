@@ -5,6 +5,7 @@ import java.util.Vector;
 
 public class Player {
 
+	boolean black;
 	int playerNumber;
 	CheckerBoard lastMove;
 	Vector<CheckerBoard> choices;
@@ -13,6 +14,8 @@ public class Player {
 	public Player(int assignedNumber){
 			
 		playerNumber = assignedNumber;
+		if(assignedNumber == 0) black = true;
+		else black = false;
 	}
 	
 	public void go(){
@@ -20,10 +23,10 @@ public class Player {
 		
 	}
 	
-	public CheckerBoard move1(CheckerBoard inBoard){
-		
-		return MiniMax.minimax_decision(inBoard);
-	}
+//	public CheckerBoard move1(CheckerBoard inBoard){
+//		
+//		return MiniMax.minimax_decision(inBoard);
+//	}
 	
 	public CheckerBoard move(CheckerBoard inBoard){
 
@@ -48,18 +51,12 @@ public class Player {
 					break;
 				}
 			}
-			//System.out.println("size: " + choices.size());
 			
 			if(choices.size() == 0) return null;
 			
-			bestChoice = getRandom(0, choices.size()-1);	
-			
-			//System.out.println("choice: " + bestChoice);
-			
-			bestBoard = choices.get(bestChoice);
-			
-			//if(bestChoice == 0) 
-										
+			if(bestChoice == 0) bestChoice = getRandom(0, choices.size()-1);
+				
+			bestBoard = choices.get(bestChoice);									
 		}
 		
 		catch(ArrayIndexOutOfBoundsException aioobe){

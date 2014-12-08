@@ -216,7 +216,7 @@ public class CheckerBoard {
 						
 					tempMove += " then captured " + target1;
 					currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE
-					move(currentBoard, currentPiece, target2, justKinged);
+					justKinged = move(currentBoard, currentPiece, target2, justKinged);
 					myCaptures++;											// SET THE CURRENT PIECE ACROSS THE RED PIECE
 					jump(player, currentBoard, movesList, currentPiece, jump, justKinged);			// JUMP
 				}					
@@ -258,10 +258,10 @@ public class CheckerBoard {
 				if(jumpingSquare.isBlack()){										// IF THE TARGET SQUARE IS OCCUPIED BY A RED PIECE
 					
 					int jump = target2;					
-										
+					//TODO Jumping through the king zone not working
 					tempMove += " then captured " + target1;
 					currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE
-					move(currentBoard, currentPiece, target2, justKinged);
+					justKinged = move(currentBoard, currentPiece, target2, justKinged);
 					myCaptures++;														// SET THE CURRENT PIECE ACROSS THE RED PIECE
 					jump(player, currentBoard, movesList, currentPiece, jump, justKinged);	// JUMP
 				}					

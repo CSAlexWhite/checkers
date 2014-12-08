@@ -51,6 +51,7 @@ public class Main extends Application {
 				@Override
 				public Void call() throws Exception {
 					
+					boolean gameOver = false;
 					int i=0;
 					while(true){
 						
@@ -61,7 +62,10 @@ public class Main extends Application {
 							@Override
 							public void run(){
 								
-								gameBoard.setup(game.nextBoard());
+								try{gameBoard.setup(game.nextBoard());}
+								catch(NullPointerException npe){
+									System.out.println("GAME OVER");
+								}
 							}
 						});
 						
@@ -75,8 +79,7 @@ public class Main extends Application {
 			Thread th = new Thread(task);
 			th.setDaemon(true);
 			th.start();
-			
-			
+				
 //			Platform.runLater(new Runnable() {
 //				@Override
 //				public void run() {
