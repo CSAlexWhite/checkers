@@ -8,9 +8,10 @@ public class Player {
 	int playerNumber;
 	CheckerBoard lastMove;
 	Vector<CheckerBoard> choices;
+	static Random rand;
 	
 	public Player(int assignedNumber){
-		
+			
 		playerNumber = assignedNumber;
 	}
 	
@@ -35,12 +36,25 @@ public class Player {
 					bestScore = choices.get(i).myValue;
 					bestChoice = i;	
 				}
-			}
 				
+				if(choices.get(i).myCaptures > 0){
+					
+					bestChoice = i;
+					break;
+				}
+			}
+			System.out.println("size: " + choices.size());
+			
+			if(choices.size() == 0) return null;
+			
+			bestChoice = getRandom(0, choices.size()-2);	
+			
+			//System.out.println("choice: " + bestChoice);
+			
 			bestBoard = choices.get(bestChoice);
 			
-			if(bestChoice == 0) 
-				bestChoice = getRandom(0, choices.size());						
+			//if(bestChoice == 0) 
+										
 		}
 		
 		catch(ArrayIndexOutOfBoundsException aioobe){
@@ -59,8 +73,9 @@ public class Player {
 	
 	public static int getRandom(int min, int max){
 		
-		Random rand = new Random();
-		int randomNum = rand.nextInt((max-min) + 1) + min;
+		rand = new Random();
+		int randomNum = rand.nextInt((max-min) + 2) + min;
+		//System.out.println(randomNum);
 		return randomNum;
 	}
 }

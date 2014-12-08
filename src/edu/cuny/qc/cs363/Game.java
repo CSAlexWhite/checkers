@@ -10,7 +10,8 @@ public class Game {
 	public Game(){
 		
 		history = new Vector<CheckerBoard>();
-		currentBoard = new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
+		currentBoard = 	new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
+						//new CheckerBoard("OOOOOOOO KK OOOOOOOO KK OOOOO KK");
 				//new CheckerBoard("K                   OO    K     ");
 				//new CheckerBoard("    XXXX                OOOO    ");
 		currentBoard.printBoard(0);

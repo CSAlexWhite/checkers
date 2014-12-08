@@ -12,7 +12,7 @@ public class CheckerBoard {
 	
 	ArrayList<CheckerPiece> board; 
 	
-	int possibleMoves, myValue, boardPlayer, turn, jumpFrom;
+	int possibleMoves, myValue, myCaptures, boardPlayer, turn, jumpFrom;
 	
 	String moveFromLast, tempMove;
 	
@@ -23,6 +23,7 @@ public class CheckerBoard {
 	public CheckerBoard(String key){
 		
 		printPositions();
+		myCaptures = 0;
 		moveFromLast = "Opening Board";
 		turn = -1;
 		board = new ArrayList<CheckerPiece>();
@@ -35,7 +36,7 @@ public class CheckerBoard {
 	
 	public CheckerBoard(ArrayList<CheckerPiece> inputBoard, int turn, String move){
 		
-		turn++;
+		turn++; myCaptures = 0;
 		moveFromLast = move;
 		board = new ArrayList<CheckerPiece>();
 		for(int i=0; i<32; i++) board.add(new CheckerPiece(inputBoard.get(i)));
@@ -215,7 +216,7 @@ public class CheckerBoard {
 						
 					tempMove += " then captured " + target1;
 					currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE
-																			// SET THE CURRENT PIECE ACROSS THE RED PIECE
+					myCaptures++;											// SET THE CURRENT PIECE ACROSS THE RED PIECE
 					jump(player, currentBoard, movesList, currentPiece, jump, justKinged);			// JUMP
 				}					
 			}	
@@ -259,7 +260,7 @@ public class CheckerBoard {
 										
 					tempMove += " then captured " + target1;
 					currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE						
-																			// SET THE CURRENT PIECE ACROSS THE RED PIECE
+					myCaptures++;														// SET THE CURRENT PIECE ACROSS THE RED PIECE
 					jump(player, currentBoard, movesList, currentPiece, jump, justKinged);	// JUMP
 				}					
 			}	

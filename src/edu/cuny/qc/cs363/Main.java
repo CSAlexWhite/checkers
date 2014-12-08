@@ -3,6 +3,7 @@ package edu.cuny.qc.cs363;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Random;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -54,7 +55,7 @@ public class Main extends Application {
 		//launch(args);
 		
 		game = new Game();
-		
+
 		player1 = new Player(0);
 		player2 = new Player(1);
 		
