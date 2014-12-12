@@ -23,15 +23,16 @@ public class Player {
 		
 	}
 	
-	public CheckerBoard move(CheckerBoard inBoard){
+	public CheckerBoard move(CheckerBoard inBoard) throws IllegalArgumentException{
 		
-		int bestChoice = 0, bestValue = Integer.MIN_VALUE;
+		int bestChoice = 0;
+		int bestValue = Integer.MIN_VALUE;
 		Vector<CheckerBoard> choices = inBoard.getChildren(playerNumber);
 		Vector<CheckerBoard> capturingMoves = new Vector<CheckerBoard>();
 		
 		for(int i=0; i<choices.size(); i++){
 			
-			MiniMax decision = new MiniMax(inBoard, 7, Integer.MIN_VALUE, Integer.MAX_VALUE,  true, playerNumber);
+			MiniMax decision = new MiniMax(inBoard, 8, Integer.MIN_VALUE, Integer.MAX_VALUE,  true, playerNumber);
 			int value = decision.value;
 			
 			if(value > bestValue){
@@ -70,7 +71,55 @@ public class Player {
 		return choices.get(bestChoice);
 	}
 	
-	public CheckerBoard move1(CheckerBoard inBoard){
+	public CheckerBoard move1(CheckerBoard inBoard) throws IllegalArgumentException{
+		
+		int bestChoice = 0;
+		int bestValue = Integer.MIN_VALUE;
+		Vector<CheckerBoard> choices = inBoard.getChildren(playerNumber);
+		Vector<CheckerBoard> capturingMoves = new Vector<CheckerBoard>();
+		
+		for(int i=0; i<choices.size(); i++){
+			
+			MiniMax decision = new MiniMax(inBoard, 8, Integer.MIN_VALUE, Integer.MAX_VALUE,  true, playerNumber);
+			int value = decision.value;
+			
+			if(value > bestValue){
+				
+				bestValue = value;
+				bestChoice = i;
+			}
+			
+			if(choices.get(i).capture){
+				
+				capturingMoves.add(choices.get(i));
+			}			
+		}
+		
+		if(capturingMoves.size() == 0 && bestValue < 2){
+			
+			bestChoice = getRandom(0, choices.size()-1);
+		}
+		
+		if(capturingMoves.size() > 0) {
+			
+			bestValue = 0;
+
+			for(int i=0; i<capturingMoves.size(); i++){
+				
+				if(capturingMoves.get(i).myValue > bestValue){;
+				
+					bestValue = capturingMoves.get(i).myValue;
+					bestChoice = i;	
+				}
+			}
+			
+			return capturingMoves.get(bestChoice);
+		}	
+
+		return choices.get(bestChoice);
+	}
+	
+	public CheckerBoard move2(CheckerBoard inBoard){
 
 		Vector<CheckerBoard> capturingMoves = new Vector<CheckerBoard>();
 		int bestScore = 0, bestChoice = 0, bestJump = 0;
@@ -90,9 +139,9 @@ public class Player {
 				
 				if(choices.get(i).capture){
 					
-					System.out.println("CAPTURE EXISTS AT MOVE: " + i);
-					System.out.println("MOVE: " + i + " IS:");
-					choices.get(i).printBoard(0);
+//					System.out.println("CAPTURE EXISTS AT MOVE: " + i);
+//					System.out.println("MOVE: " + i + " IS:");
+//					choices.get(i).printBoard(0);
 					
 					capturingMoves.add(choices.get(i));
 				}

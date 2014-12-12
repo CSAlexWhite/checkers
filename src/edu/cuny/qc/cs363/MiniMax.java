@@ -27,11 +27,14 @@ public class MiniMax implements Runnable{
 	public static int minimax(CheckerBoard node, int depth, int alpha, int beta, boolean maximizingPlayer, int player){
 		
 		if(depth == 0 || node.gameOver())
-			return node.evaluate();
+			return node.boardValue;
 		
 		if(maximizingPlayer){
 
 			Vector<CheckerBoard> children = node.getChildren(player);
+			
+			if(children.size() == 0){ alpha +=1000; return alpha;}
+			
 			for(int i=0; i<children.size(); i++){
 				
 				int value = minimax(children.get(i), depth -1, alpha, beta, false, Math.abs(player - 1));
@@ -45,6 +48,9 @@ public class MiniMax implements Runnable{
 		else{
 			
 			Vector<CheckerBoard> children = node.getChildren(Math.abs(player - 1));
+			
+			if(children.size() == 0){ beta+=1000; return beta;}
+			
 			for(int i=0; i<children.size(); i++){
 				
 				int value = minimax(children.get(i), depth - 1, alpha, beta, true, player);

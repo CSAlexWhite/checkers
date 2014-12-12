@@ -34,20 +34,22 @@ public class Game extends Task<Game>{
 		history.add(nextMove);
 	}
 
-	public CheckerBoard nextBoard(){
+	public CheckerBoard nextBoard() throws IllegalArgumentException{
 		
 		turn++;
 		if(turn%2 == 0){ 
 			
 			currentBoard = p1.move(currentBoard);
 			add(currentBoard);
+			if(currentBoard.gameOver()) System.out.println("RED WINS");
 			return currentBoard;
 		}
 		
 		else {
 			
-			currentBoard = p2.move(currentBoard);
+			currentBoard = p2.move2(currentBoard);
 			add(currentBoard);
+			if(currentBoard.gameOver()) System.out.println("BLACK WINS");
 			return currentBoard;
 		}
 	}

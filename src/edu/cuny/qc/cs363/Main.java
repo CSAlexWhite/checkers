@@ -37,8 +37,6 @@ public class Main extends Application {
 			gameBoard = (GUIController) fxmlloader.getController();
 			gameBoard.setup(game.currentBoard);
 			
-			//gameBoard.setup(game.nextBoard());
-			
 			Task task = new Task<Void>(){
 				
 				@Override
@@ -56,7 +54,19 @@ public class Main extends Application {
 									
 									setGameOver();
 									System.out.println("GAME OVER");
-									game.printHistory();
+									//game.printHistory();
+								}
+								catch(IllegalArgumentException iae){
+									
+									setGameOver();
+									System.out.println("GAME OVER");
+									//game.printHistory();
+								}
+								catch(IndexOutOfBoundsException ioobe){
+									
+									setGameOver();
+									System.out.println("GAME OVER");
+									//game.printHistory();
 								}
 							}
 						});
@@ -70,22 +80,7 @@ public class Main extends Application {
 			
 			Thread th = new Thread(task);
 			th.setDaemon(true);
-			th.start();
-				
-//			Platform.runLater(new Runnable() {
-//				@Override
-//				public void run() {
-//					
-//					gameBoard.setup(game.nextBoard());
-//					try {
-//						Thread.sleep(1000);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					gameBoard.setup(game.nextBoard());
-//				}
-//			});
+			th.start();			
 
 		} catch(Exception e) {e.printStackTrace();}
 	}
@@ -99,35 +94,41 @@ public class Main extends Application {
 	}
 
 	public static void main(String[] args) throws IOException {
-					
-		//game = new Game();
-		//game.thisThread.start();
-		gameOver = false;
+		
 		launch(args);
-				
-//		String temp = null;
-//		while(temp != "exit"){
-//			//01234567890123456789012345678901	
-//		//CheckerBoard test = new CheckerBoard("    OO      X O  O        OO    ");
-//		CheckerBoard test = new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
-//		//CheckerBoard test = new CheckerBoard("KKKKKKKKKKKKK       QQQQQQQQQQQQ");
-//		//printPositions();
-//		//CheckerBoard test = new CheckerBoard("    XXXX                OOOO    ");
-//		//CheckerBoard test = new CheckerBoard("K                   OO    K     ");
-//		//CheckerBoard test = new CheckerBoard("XX OO XX OO XX OO XX OO XX OO XX");
-//		test.printBoard(0,0);
+		
+//		game = new Game();
+//		gameOver = false;
+//		long startTime = System.currentTimeMillis();
+//		
+//		while(!gameOver){
 //					
-//			InputStreamReader sreader = new InputStreamReader(System.in);
-//			BufferedReader reader = new BufferedReader(sreader);
-//			temp = reader.readLine();
-//			
-//			//test.printPositions();
-//			test.getChildren(0);
-//			test = test.movesList.get(Integer.parseInt(temp));
-//		}		
+//			try{game.nextBoard();}
+//			catch(NullPointerException npe){
+//				
+//				setGameOver();
+//				System.out.println("GAME OVER");
+//				System.out.println("TOTAL TIME = " + (System.currentTimeMillis() - startTime)/1000 + "." + (System.currentTimeMillis() - startTime)%100);
+//				//game.printHistory();
+//			}
+//			catch(IllegalArgumentException iae){
+//				
+//				setGameOver();
+//				System.out.println("GAME OVER");
+//				System.out.println("TOTAL TIME = " + (System.currentTimeMillis() - startTime)/1000 + "." + (System.currentTimeMillis() - startTime)%100);
+//				//game.printHistory();
+//			}
+//			catch(IndexOutOfBoundsException ioobe){
+//				
+//				setGameOver();
+//				System.out.println("GAME OVER");
+//				System.out.println("TOTAL TIME = " + (System.currentTimeMillis() - startTime)/1000 + "." + (System.currentTimeMillis() - startTime)%100);
+//				//game.printHistory();
+//			}			
+//		}	
 	}
 	
-	public void setGameOver(){
+	public static void setGameOver(){
 		
 		gameOver = true;
 	}
