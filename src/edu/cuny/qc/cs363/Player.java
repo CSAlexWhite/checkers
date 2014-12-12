@@ -30,7 +30,8 @@ public class Player {
 	
 	public CheckerBoard move(CheckerBoard inBoard){
 
-		int bestScore = 0, bestChoice = 0;
+		Vector<CheckerBoard> capturingMoves = new Vector<CheckerBoard>();
+		int bestScore = 0, bestChoice = 0, bestJump = 0;
 		CheckerBoard bestBoard = null;
 		
 		try{
@@ -45,27 +46,56 @@ public class Player {
 					bestChoice = i;	
 				}
 				
-				if(choices.get(i).myCaptures > 0){
+				if(choices.get(i).capture){
 					
-					bestChoice = i;
-					break;
+					System.out.println("CAPTURE EXISTS AT MOVE: " + i);
+					System.out.println("MOVE: " + i + " IS:");
+					choices.get(i).printBoard(0);
+					
+					capturingMoves.add(choices.get(i));
 				}
 			}
 			
 			if(choices.size() == 0) return null;
+					
+			if(capturingMoves.size() == 0){
+							
+				if(bestChoice == 0) bestChoice = getRandom(0, choices.size()-1);
+				else bestBoard = choices.get(bestChoice);
+			}
 			
-			if(bestChoice == 0) bestChoice = getRandom(0, choices.size()-1);
+			if(capturingMoves.size() > 0) {
+				
+				bestScore = 0;
+
+				for(int i=0; i<capturingMoves.size(); i++){
+					
+					if(capturingMoves.get(i).myValue > bestScore){;
+					
+						bestScore = capturingMoves.get(i).myValue;
+						bestJump = i;	
+					}
+				}
+				
+				bestBoard = capturingMoves.get(bestJump);
+			}
+			
 				
 			bestBoard = choices.get(bestChoice);									
 		}
 		
 		catch(ArrayIndexOutOfBoundsException aioobe){
 			
+			System.out.println("Move out of bounds");
+			aioobe.printStackTrace();
 			return null;
 		}
 		
 		catch(NullPointerException npe){
 			
+			System.out.println("Null Pointer for some reason");
+			System.out.println("Size of moves vector: " + choices.size());
+			System.out.println("Size of capturing moves vector: " + capturingMoves.size());
 			return null;
 		}
 		

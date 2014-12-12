@@ -16,14 +16,13 @@ public class Game extends Task<Game>{
 	public Game(){
 		
 		//gameBoard = board;
-		p1 = new Player(0);
-		p2 = new Player(1);
-//		p1 = player1; p2 = player2;
+		p1 = new Player(1);
+		p2 = new Player(0);
 		history = new Vector<CheckerBoard>();
 		currentBoard = 	new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
 						//new CheckerBoard("OOOOOOOO KK OOOOOOOO KK OOOOO KK");
-				//new CheckerBoard("K                   OO    K     ");
-				//new CheckerBoard("    XXXX                OOOO    ");
+						//new CheckerBoard("K                   OO    K     ");
+						//new CheckerBoard("    XXXX                OOOO    ");
 		currentBoard.printBoard(0);
 		
 		thisThread = new Thread(this);
@@ -38,8 +37,19 @@ public class Game extends Task<Game>{
 	public CheckerBoard nextBoard(){
 		
 		turn++;
-		if(turn%2 == 0) return currentBoard = p1.move(currentBoard);
-		else return currentBoard = p2.move(currentBoard);
+		
+		if(turn%2 == 0){ 
+			
+			currentBoard = p1.move(currentBoard);
+			add(currentBoard);
+			return currentBoard;
+		}
+		else {
+			
+			currentBoard = p2.move(currentBoard);
+			add(currentBoard);
+			return currentBoard;
+		}
 		
 //		if(currentBoard.turn == 0) currentBoard = currentBoard.getChildren(0).get(0);
 //		else currentBoard = currentBoard.getChildren(1).get(0);

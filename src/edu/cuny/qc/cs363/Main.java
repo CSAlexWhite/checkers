@@ -1,20 +1,12 @@
 package edu.cuny.qc.cs363;
 	
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Random;
-
 import javafx.concurrent.Task;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 
 public class Main extends Application {
@@ -23,6 +15,7 @@ public class Main extends Application {
 	static Player player2;
 	static Game game;
 	static GUIController gameBoard;
+	static boolean gameOver;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -51,9 +44,8 @@ public class Main extends Application {
 				@Override
 				public Void call() throws Exception {
 					
-					boolean gameOver = false;
 					int i=0;
-					while(true){
+					while(!gameOver){
 						
 						final int finalI = i;
 						final CheckerBoard temp = game.currentBoard;
@@ -64,7 +56,10 @@ public class Main extends Application {
 								
 								try{gameBoard.setup(game.nextBoard());}
 								catch(NullPointerException npe){
+									
+									setGameOver();
 									System.out.println("GAME OVER");
+									game.printHistory();
 								}
 							}
 						});
@@ -72,6 +67,7 @@ public class Main extends Application {
 						i++;
 						Thread.sleep(1000);
 					}
+					return null;
 					
 				}
 			};
@@ -110,7 +106,7 @@ public class Main extends Application {
 					
 		//game = new Game();
 		//game.thisThread.start();
-		
+		gameOver = false;
 		launch(args);
 				
 //		String temp = null;
@@ -133,6 +129,11 @@ public class Main extends Application {
 //			test.getChildren(0);
 //			test = test.movesList.get(Integer.parseInt(temp));
 //		}		
+	}
+	
+	public void setGameOver(){
+		
+		gameOver = true;
 	}
 	
 	public static void printPositions(){

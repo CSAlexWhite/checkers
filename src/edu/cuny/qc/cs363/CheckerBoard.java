@@ -12,7 +12,8 @@ public class CheckerBoard {
 	
 	ArrayList<CheckerPiece> board; 
 	
-	int possibleMoves, myValue, myCaptures, boardPlayer, turn, jumpFrom;
+	int possibleMoves, myValue, boardPlayer, turn, jumpFrom;
+	boolean capture;
 	
 	String moveFromLast, tempMove;
 	
@@ -23,7 +24,7 @@ public class CheckerBoard {
 	public CheckerBoard(String key){
 		
 		printPositions();
-		myCaptures = 0;
+		capture = false;
 		moveFromLast = "Opening Board";
 		turn = -1;
 		board = new ArrayList<CheckerPiece>();
@@ -34,9 +35,9 @@ public class CheckerBoard {
 		red_adjacence = Main.globals.RED_ADJACENCE;
 	}
 	
-	public CheckerBoard(ArrayList<CheckerPiece> inputBoard, int turn, String move){
+	public CheckerBoard(ArrayList<CheckerPiece> inputBoard, int turn, String move, boolean capture){
 		
-		turn++; myCaptures = 0;
+		turn++; this.capture = capture;
 		moveFromLast = move;
 		board = new ArrayList<CheckerPiece>();
 		for(int i=0; i<32; i++) board.add(new CheckerPiece(inputBoard.get(i)));
@@ -45,6 +46,7 @@ public class CheckerBoard {
 		red_adjacence = Main.globals.RED_ADJACENCE;	
 		
 		myValue = evaluate();
+		
 	}
 			
 	public Vector<CheckerBoard> getChildren(int player){
@@ -82,7 +84,7 @@ public class CheckerBoard {
 							tempMove = "Black moved from " + currentPiece + " to " + target1;
 							
 							kinged = move(newBoard, currentPiece, target1, false);				// SWAP PIECES
-							movesList.add(new CheckerBoard(newBoard, player, tempMove)); 	// RECORD THE MOVE
+							movesList.add(new CheckerBoard(newBoard, player, tempMove, false)); 	// RECORD THE MOVE
 							
 //							System.out.println("Moving Back");
 							move(newBoard, target1, currentPiece, kinged);				// SWAP THEM BACK						
@@ -143,7 +145,7 @@ public class CheckerBoard {
 							boolean kinged = false;
 							tempMove = "Red moved from " + currentPiece + " to " + target1;
 							kinged = move(newBoard, currentPiece, target1, false);				// SWAP PIECES
-							movesList.add(new CheckerBoard(newBoard, player, tempMove)); 	// RECORD THE MOVE							
+							movesList.add(new CheckerBoard(newBoard, player, tempMove, false)); 	// RECORD THE MOVE							
 		//					System.out.println("Moving Back");
 							move(newBoard, target1, currentPiece, kinged);				// SWAP THEM BACK						
 							continue;
@@ -162,7 +164,7 @@ public class CheckerBoard {
 									kinged = move(newBoard, currentPiece, jump, false);
 									//move(newBoard, jump, currentPiece, kinged);
 									tempMove = "Red captured " + target1;
-									newBoard.get(target1).setEmpty();			// REMOVE RED PIECE, TRACK CAPTURED PIECES?
+									newBoard.get(target1).setEmpty();			// REMOVE RED PIECE, TRACK CAPTURED PIECES									
 									jump(player, newBoard, movesList, currentPiece, jump, kinged);				// JUMP!
 								}
 							}
@@ -192,8 +194,8 @@ public class CheckerBoard {
 			for(int square=0; square<32; square++) currentBoard.add(new CheckerPiece(newBoard.get(square)));
 
 			tempMove += " by jumping from " + jumpFrom + " to " + currentPiece;
-			//movesList.add(new CheckerBoard(currentBoard, player, tempMove));				// BOARD WITH THIS CAPTURE GOES ON THE STACK
-			//move(currentBoard, currentPiece, previousPiece, justKinged);
+			//movesList.add(new CheckerBoard(currentBoard, player, tempMove, true));				// BOARD WITH THIS CAPTURE GOES ON THE STACK
+			move(currentBoard, previousPiece, currentPiece, justKinged);
 			
 			for(int neighbor=0; neighbor<currentBoard.get(currentPiece).numNeighbors(); neighbor++){
 				
@@ -212,17 +214,15 @@ public class CheckerBoard {
 			
 				if(jumpingSquare.isRed()){										// IF THE TARGET SQUARE IS OCCUPIED BY A RED PIECE
 
-					int jump = target2;					
-						
+					int jump = target2;										
 					tempMove += " then captured " + target1;
 					currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE
-					justKinged = move(currentBoard, currentPiece, target2, justKinged);
-					myCaptures++;											// SET THE CURRENT PIECE ACROSS THE RED PIECE
+					justKinged = move(currentBoard, currentPiece, target2, justKinged);													// SET THE CURRENT PIECE ACROSS THE RED PIECE
 					jump(player, currentBoard, movesList, currentPiece, jump, justKinged);			// JUMP
 				}					
 			}	
 			
-			movesList.add(new CheckerBoard(currentBoard, player, tempMove));
+			movesList.add(new CheckerBoard(currentBoard, player, tempMove, true));
 			//move(currentBoard, previousPiece, currentPiece, justKinged);
 			return;
 		}
@@ -236,8 +236,8 @@ public class CheckerBoard {
 			for(int square=0; square<32; square++) currentBoard.add(new CheckerPiece(newBoard.get(square)));
 			
 			tempMove += " by jumping from " + jumpFrom + " to " + currentPiece;
-			//movesList.add(new CheckerBoard(currentBoard, player, tempMove));				// BOARD WITH THIS CAPTURE GOES ON THE LIST
-			//move(currentBoard, currentPiece, previousPiece, justKinged);
+			//movesList.add(new CheckerBoard(currentBoard, player, tempMove, true));				// BOARD WITH THIS CAPTURE GOES ON THE LIST
+			move(currentBoard, previousPiece, currentPiece, justKinged);
 			
 			for(int neighbor=0; neighbor<currentBoard.get(currentPiece).numNeighbors(); neighbor++){
 				
@@ -261,13 +261,12 @@ public class CheckerBoard {
 					//TODO Jumping through the king zone not working
 					tempMove += " then captured " + target1;
 					currentBoard.get(target1).setEmpty();					// CAPTURE THE RED PIECE
-					justKinged = move(currentBoard, currentPiece, target2, justKinged);
-					myCaptures++;														// SET THE CURRENT PIECE ACROSS THE RED PIECE
+					justKinged = move(currentBoard, currentPiece, target2, justKinged);																	// SET THE CURRENT PIECE ACROSS THE RED PIECE
 					jump(player, currentBoard, movesList, currentPiece, jump, justKinged);	// JUMP
 				}					
 			}	
 			
-			movesList.add(new CheckerBoard(currentBoard, player, tempMove));
+			movesList.add(new CheckerBoard(currentBoard, player, tempMove, true));
 			//move(currentBoard, previousPiece, currentPiece, justKinged);
 			return;
 		}
@@ -425,7 +424,7 @@ public class CheckerBoard {
 				if(board.get(i).isRed() && board.get(i).isKing()) value += 5;		
 			}
 		}
-			
+		
 		value += possibleMoves;
 		
 		// ideas: more possible moves is good, less middle board space is better
