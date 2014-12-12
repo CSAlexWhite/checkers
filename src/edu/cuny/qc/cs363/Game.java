@@ -37,23 +37,19 @@ public class Game extends Task<Game>{
 	public CheckerBoard nextBoard(){
 		
 		turn++;
-		
 		if(turn%2 == 0){ 
 			
 			currentBoard = p1.move(currentBoard);
 			add(currentBoard);
 			return currentBoard;
 		}
+		
 		else {
 			
 			currentBoard = p2.move(currentBoard);
 			add(currentBoard);
 			return currentBoard;
 		}
-		
-//		if(currentBoard.turn == 0) currentBoard = currentBoard.getChildren(0).get(0);
-//		else currentBoard = currentBoard.getChildren(1).get(0);
-//		return currentBoard;
 	}
 	
 	public void printHistory(){

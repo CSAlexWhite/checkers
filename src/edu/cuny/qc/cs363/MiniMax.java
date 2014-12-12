@@ -1,101 +1,64 @@
 package edu.cuny.qc.cs363;
 
-import java.util.Stack;
 import java.util.Vector;
 
-public class MiniMax {
+public class MiniMax implements Runnable{
 
-	static Player player;
-	static CheckerBoard startingBoard;
-	static Stack<Vector<CheckerBoard>> options;
-	static int depth, decision, playerNumber;
+	int max_depth, alpha, beta, player;
+	boolean maximizingPlayer;
+	CheckerBoard startingBoard;
+	Thread thisThread;
 	
-	public MiniMax(CheckerBoard current, Player p, int d){
+	int value;
+	
+	public MiniMax(CheckerBoard node, int depth, int alpha, int beta, boolean maximizingPlayer, int player){
 		
-		startingBoard = current;
-		depth = d;
-		player = p;
-		decision = minimax_decision(current);
-		playerNumber = player.playerNumber-1;
+		startingBoard = node;
+		max_depth = depth;
+		this.alpha = alpha;
+		this.beta = beta;
+		this.maximizingPlayer = maximizingPlayer;
+		this.player = player;
+		
+		thisThread = new Thread(this);
+		thisThread.start();
 	}
 	
-	public static int minimax_decision(CheckerBoard input){
+	public static int minimax(CheckerBoard node, int depth, int alpha, int beta, boolean maximizingPlayer, int player){
 		
-		Vector<CheckerBoard> currentChoices;
-		CheckerBoard temp = input;
+		if(depth == 0 || node.gameOver())
+			return node.evaluate();
 		
-		int iteration = 0;
-		int value = max_value(input, iteration);
-		
-		int totalScore = 0;
-		int bestChoice = 0;	
-		
-		for(int i=0; i<=depth; i++){
-			
-			int choice = 0;
-			currentChoices = temp.getChildren((playerNumber+i)%2); 	// get children according to 
-																	// which player it is
-			
-			if((playerNumber+i%2)==playerNumber){	// for me, make the best choice
+		if(maximizingPlayer){
+
+			Vector<CheckerBoard> children = node.getChildren(player);
+			for(int i=0; i<children.size(); i++){
 				
-				int bestValue = -1000;
-				for(int j=0; j<currentChoices.size(); i++){
-					
-					if(currentChoices.get(i).myValue > bestValue) choice = j;
-				}			
+				int value = minimax(children.get(i), depth -1, alpha, beta, false, Math.abs(player - 1));
+				alpha = Math.max(alpha, value);
+				if(beta <= alpha) break;
 			}
 			
-			if((playerNumber+i%2)!=playerNumber){	// for you, make the worst choice
+			return alpha;
+		}
+		
+		else{
+			
+			Vector<CheckerBoard> children = node.getChildren(Math.abs(player - 1));
+			for(int i=0; i<children.size(); i++){
 				
-				int worstValue = 10000;
-				for(int j=0; j<currentChoices.size(); i++){
-					
-					if(currentChoices.get(i).myValue < worstValue) choice = j;
-				}			
+				int value = minimax(children.get(i), depth - 1, alpha, beta, true, player);
+				beta = Math.min(beta, value);
+				if(beta <= alpha) break;
 			}
 			
-			temp = currentChoices.get(choice);
+			return beta;
 		}
-		
-		return bestChoice;
-	}
-	
-	public static int max_value(CheckerBoard input, int iteration){
-		
-		int value =-100;
-		if (input.board.isEmpty() || iteration >=7) // terminal _test ???
-			return input.evaluate(); //not sure the Uttility(state)
-		else {
-			
-			input.getChildren(0);
-			//------------------???---------------------------------
-			// got throught each possible black piece move
-			
-				value=Math.max(value, min_value(input, iteration++));				
-		}
-		
-		return value;
-		
-	}
-	public static int min_value(CheckerBoard input, int iteration){
-		int value = -100;
-		// cannot be winning board 
-		if (input.possibleMoves==0)// no move move for red piece
-			return input.evaluate();
-		else {
-			input.getChildren(0);
-			for (int i=0; i<32 ;i++){ // got throught each possible black piece move
-				
-				value=Math.max(value, min_value(input, iteration++));		
-		     }
-		}
-		return value;
 	}
 
-	private int Utility(CheckerBoard input) {
-		// TODO Auto-generated method stub
-		return 0;
+	@Override
+	public void run() {
+		
+		value = minimax(startingBoard,max_depth,alpha,beta,maximizingPlayer,player);
 	}
-
-	
 }
