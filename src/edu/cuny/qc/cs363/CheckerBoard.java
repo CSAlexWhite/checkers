@@ -184,6 +184,7 @@ public class CheckerBoard {
 	
 	public void jump(int player, ArrayList<CheckerPiece> newBoard, Vector<CheckerBoard> movesList, int previousPiece, int currentPiece, boolean justKinged){ 
 		
+		if(justKinged) return;
 //		System.out.println("Jumping!");
 		if(player == 0){
 

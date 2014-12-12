@@ -27,7 +27,7 @@ public class Main extends Application {
 									
 			GridPane root = fxmlloader.load();//(GridPane)FXMLLoader.load(getClass().getResource("GUI.fxml"));
 			
-			Scene scene = new Scene(root,800,800);
+			Scene scene = new Scene(root,620,656);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
 			primaryStage.setScene(scene);
@@ -44,11 +44,8 @@ public class Main extends Application {
 				@Override
 				public Void call() throws Exception {
 					
-					int i=0;
 					while(!gameOver){
 						
-						final int finalI = i;
-						final CheckerBoard temp = game.currentBoard;
 						Platform.runLater(new Runnable(){
 							
 							@Override
@@ -63,12 +60,11 @@ public class Main extends Application {
 								}
 							}
 						});
-						
-						i++;
+
 						Thread.sleep(1000);
 					}
-					return null;
 					
+					return null;		
 				}
 			};
 			

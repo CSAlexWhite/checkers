@@ -56,6 +56,8 @@ public class Player {
 				}
 			}
 			
+			bestBoard = choices.get(bestChoice);
+			
 			if(choices.size() == 0) return null;
 					
 			if(capturingMoves.size() == 0){
@@ -78,24 +80,16 @@ public class Player {
 				}
 				
 				bestBoard = capturingMoves.get(bestJump);
-			}
-			
-				
-			bestBoard = choices.get(bestChoice);									
+			}											
 		}
 		
 		catch(ArrayIndexOutOfBoundsException aioobe){
 			
-			System.out.println("Move out of bounds");
-			aioobe.printStackTrace();
 			return null;
 		}
 		
 		catch(NullPointerException npe){
 			
-			System.out.println("Null Pointer for some reason");
-			System.out.println("Size of moves vector: " + choices.size());
-			System.out.println("Size of capturing moves vector: " + capturingMoves.size());
 			return null;
 		}
 		
