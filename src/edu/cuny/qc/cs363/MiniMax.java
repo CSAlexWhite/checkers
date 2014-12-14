@@ -15,14 +15,11 @@ public class MiniMax implements Runnable{
 	
 	public MiniMax(Game game, CheckerBoard node, int depth, int alpha, int beta, boolean maximizingPlayer, int player){
 		
+		nodesSearched = 0;
 		startingBoard = node;
 		max_depth = depth;
-		
-		//System.out.println("BOARDTURN: " + node.turn);
-		
+				
 		//if(node.turn > 20) max_depth = depth+1; 
-		
-		//System.out.println(max_depth);
 		
 		currentGame = game;
 		
@@ -35,10 +32,14 @@ public class MiniMax implements Runnable{
 		thisThread.start();
 	}
 	
-	public static int minimax(CheckerBoard node, int depth, int alpha, int beta, boolean maximizingPlayer, int player){
+	public static int alphabeta(CheckerBoard node, int depth, int alpha, int beta, boolean maximizingPlayer, int player){
 		
-		if(depth == 0 || node.gameOver())
+		if(depth == 0 || node.gameOver()){
+			
+			node.evaluate();
+			//System.out.println(node.boardValue);
 			return node.boardValue;
+		}
 		
 		if(maximizingPlayer){
 
@@ -49,7 +50,7 @@ public class MiniMax implements Runnable{
 			for(int i=0; i<children.size(); i++){
 				
 				nodesSearched++;
-				int value = minimax(children.get(i), depth -1, alpha, beta, false, Math.abs(player - 1));
+				int value = alphabeta(children.get(i), depth -1, alpha, beta, false, Math.abs(player - 1));
 				alpha = Math.max(alpha, value);
 				if(beta <= alpha) break;
 			}
@@ -66,7 +67,7 @@ public class MiniMax implements Runnable{
 			for(int i=0; i<children.size(); i++){
 				
 				nodesSearched++;
-				int value = minimax(children.get(i), depth - 1, alpha, beta, true, player);
+				int value = alphabeta(children.get(i), depth - 1, alpha, beta, true, player);
 				beta = Math.min(beta, value);
 				if(beta <= alpha) break;
 			}
@@ -74,11 +75,52 @@ public class MiniMax implements Runnable{
 			return beta;
 		}
 	}
+	
+	static int bestValue = 0;
+	public static int minimax(CheckerBoard node, int depth, boolean maximizingPlayer, int player){
+					
+		if(depth == 0 || node.gameOver())
+			return node.boardValue;
+		
+		if(maximizingPlayer){
+
+			Vector<CheckerBoard> children = node.getChildren(player);
+			
+			bestValue = Integer.MIN_VALUE;
+			for(int i=0; i<children.size(); i++){
+				
+				nodesSearched++;
+				int value = minimax(children.get(i), depth -1, false, Math.abs(player - 1));
+				bestValue = Math.max(bestValue, value);
+			}
+			
+			return bestValue;
+		}
+		
+		else{
+			
+			Vector<CheckerBoard> children = node.getChildren(Math.abs(player - 1));
+			
+			bestValue = Integer.MAX_VALUE;
+			for(int i=0; i<children.size(); i++){
+				
+				nodesSearched++;
+				int value = minimax(children.get(i), depth - 1, true, player);
+				bestValue = Math.min(bestValue, value);
+			}
+			
+			return bestValue;
+		}
+	}
 
 	@Override
 	public void run() {
-		
-		value = minimax(startingBoard,max_depth,alpha,beta,maximizingPlayer,player);
+			
+		thisThread.setPriority(1);
+		value = alphabeta(startingBoard,max_depth,alpha,beta,maximizingPlayer,player);
+		//value = minimax(startingBoard,max_depth,maximizingPlayer,player);
 		currentGame.incrementNodesSearched(nodesSearched);
+		//System.out.println(value);
+		//System.out.println(nodesSearched);
 	}
 }

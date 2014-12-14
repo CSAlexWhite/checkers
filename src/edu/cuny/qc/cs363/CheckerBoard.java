@@ -17,6 +17,7 @@ public class CheckerBoard {
 	int possibleMoves, myValue, boardPlayer, turn, jumpFrom;
 	boolean capture;
 	
+	int redKings = 0, blackKings = 0, redPieces = 0, blackPieces = 0;
 	int boardValue;
 	
 	String moveFromLast, tempMove;
@@ -421,31 +422,32 @@ public class CheckerBoard {
 	
 	public void printPositions(){
 		
-		int k = 0;
-		for(int i=0; i<8; i++){
-			for(int j=0; j<8; j++){
-				if(i%2 == j%2){ 
-					
-					System.out.print(k++ + " ");
-				}
-				else System.out.print("  ");
-			}
-			
-			System.out.println();
-		}
+//		int k = 0;
+//		for(int i=0; i<8; i++){
+//			for(int j=0; j<8; j++){
+//				if(i%2 == j%2){ 
+//					
+//					System.out.print(k++ + " ");
+//				}
+//				else System.out.print("  ");
+//			}
+//			
+//			System.out.println();
+//		}
 	}
 	
 	public int evaluate(){
 		
-		int kingValue = 5;
-		int pawnValue = 1;
-		int centeringMove = 20;
+		int kingValue = 10;
+		int pawnValue = 2;
+		int centeringMove = 10;
+		int backRow = 5;
 		
 		int value = 0;
 		
 		/********************* PIECE INFORMATION ******************************/
 		
-		int redKings = 0, blackKings = 0, redPieces = 0, blackPieces = 0, redValue = 0, blackValue = 0;
+		int redValue = 0, blackValue = 0;
 		
 		for(int i=0; i<32; i++){
 			
@@ -461,8 +463,8 @@ public class CheckerBoard {
 			blackValue = (blackKings*kingValue)/(blackKings+blackPieces+1) + (blackPieces*pawnValue)/(blackKings+blackPieces+1);
 			redValue = (redKings*kingValue)/(redKings+blackPieces+1) + (redPieces*pawnValue)/(redKings+redPieces+1);
 			
-			if(boardPlayer == 0) value = blackValue - redValue;
-			if(boardPlayer == 1) value = redValue - blackValue;
+			if(boardPlayer == 0) value = redValue - blackValue;
+			if(boardPlayer == 1) value = blackValue - redValue;
 		}
 		
 		catch(ArithmeticException ae){}
@@ -470,6 +472,7 @@ public class CheckerBoard {
 					
 		/********************* POSITION INFORMATION ***************************/
 		
+		/* MOVING TOWARD THE CENTER IS GOOD, OUT OF THE CENTER BAD */
 		for(int i=0; i<8; i++){ 
 			
 			if(center[i] != fromMove && center[i] == toMove)
@@ -479,19 +482,29 @@ public class CheckerBoard {
 				value -= centeringMove;
 		}
 		
+		/* TOWARD THE EDGE, BAD */
 		for(int i=0; i<14; i++){
 			
 			if(edge[i] == toMove) value -= centeringMove;
 		}
-
+		
+		/* LEAVING THE BACK ROW IS BAD */
+		int count = 0;
+		for(int i=28; i<32; i++){
+						
+			if(boardPlayer == 0) if(board.get(i).isEmpty()) count++;
+			if(boardPlayer == 1) if(board.get(i-28).isEmpty()) count++;
+		}
+		
+		value -= count * backRow;
 
 		return value;
 	}
 	
 	public void printBoard(int turn){//, int number){
 
-		System.out.println("\nTurn " + turn);//  + " Choice " + number);
-		System.out.println(moveFromLast);
+//		System.out.println("\nTurn " + turn);//  + " Choice " + number);
+//		System.out.println(moveFromLast);
 		System.out.println("  ---------------");
 		int position = 0;
 		for(int i=0; i<8; i++){

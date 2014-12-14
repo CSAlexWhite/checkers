@@ -13,11 +13,13 @@ public class Game extends Task<Game>{
 	long nodesSearched;
 	double avgBranchingFactor;
 	Thread thisThread;
+	int winner;
 	
 	public Game(){
 		
+		winner = -1;
 		turn = 0;
-		//nodesSearched = 0;
+		nodesSearched = 0;
 		//gameBoard = board;
 		p1 = new Player(this, 1);
 		p2 = new Player(this, 0);
@@ -26,7 +28,7 @@ public class Game extends Task<Game>{
 						//new CheckerBoard("OOOOOOOO KK OOOOOOOO KK OOOOO KK");
 						//new CheckerBoard("K                   OO    K     ");
 						//new CheckerBoard("    XXXX                OOOO    ");
-		currentBoard.printBoard(0);
+		//currentBoard.printBoard(0);
 		
 		thisThread = new Thread(this);
 		
@@ -46,19 +48,29 @@ public class Game extends Task<Game>{
 	public CheckerBoard nextBoard() throws IllegalArgumentException{
 		
 		turn++;
+		if(turn>100) winner = 2;
+		
 		if(turn%2 == 0){ 
 			
 			currentBoard = p1.move(currentBoard);
 			add(currentBoard);
-			if(currentBoard.gameOver()) System.out.println("RED WINS");
+			if(currentBoard.gameOver()){ 
+				
+				winner = 0;
+				//System.out.println("RED WINS");
+			}
 			return currentBoard;
 		}
 		
 		else {
 			
-			currentBoard = p2.move(currentBoard);
+			currentBoard = p2.move1(currentBoard);
 			add(currentBoard);
-			if(currentBoard.gameOver()) System.out.println("BLACK WINS");
+			if(currentBoard.gameOver()){ 
+				
+				winner = 1;
+				//System.out.println("BLACK WINS");
+			}
 			return currentBoard;
 		}
 	}

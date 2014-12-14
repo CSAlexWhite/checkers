@@ -25,16 +25,15 @@ public class Player {
 		
 	}
 	
-	public CheckerBoard move(CheckerBoard inBoard) throws IllegalArgumentException{
+	public synchronized CheckerBoard move(CheckerBoard inBoard) throws IllegalArgumentException{
 		
 		int bestChoice = 0;
 		int bestValue = Integer.MIN_VALUE;
 		Vector<CheckerBoard> choices = inBoard.getChildren(playerNumber);
 		Vector<CheckerBoard> capturingMoves = new Vector<CheckerBoard>();
-		
 		for(int i=0; i<choices.size(); i++){
-			
-			MiniMax decision = new MiniMax(currentGame, inBoard, 8, Integer.MIN_VALUE, Integer.MAX_VALUE,  true, playerNumber);
+
+			MiniMax decision = new MiniMax(currentGame, choices.get(i), 8, Integer.MIN_VALUE, Integer.MAX_VALUE,  true, playerNumber);
 			int value = decision.value;
 			
 			if(value > bestValue){
@@ -42,17 +41,19 @@ public class Player {
 				bestValue = value;
 				bestChoice = i;
 			}
-			
+						
 			if(choices.get(i).capture){
 				
 				capturingMoves.add(choices.get(i));
 			}			
 		}
 		
-		if(capturingMoves.size() == 0 && bestValue < 2){
-			
-			bestChoice = getRandom(0, choices.size()-1);
-		}
+		//System.out.println("Best Value = " + bestValue);
+		
+//		if(capturingMoves.size() == 0 && bestValue < 2){
+//			
+//			bestChoice = getRandom(0, choices.size()-1);
+//		}
 		
 		if(capturingMoves.size() > 0) {
 			
@@ -67,9 +68,11 @@ public class Player {
 				}
 			}
 			
+			//System.out.println("Best Value = " + bestValue);
 			return capturingMoves.get(bestChoice);
 		}	
 
+		//System.out.println("Best Value = " + bestValue);
 		return choices.get(bestChoice);
 	}
 	
@@ -141,10 +144,6 @@ public class Player {
 				
 				if(choices.get(i).capture){
 					
-//					System.out.println("CAPTURE EXISTS AT MOVE: " + i);
-//					System.out.println("MOVE: " + i + " IS:");
-//					choices.get(i).printBoard(0);
-					
 					capturingMoves.add(choices.get(i));
 				}
 				
@@ -157,7 +156,12 @@ public class Player {
 					
 			if(capturingMoves.size() == 0){
 							
-				if(bestChoice == 0) bestChoice = getRandom(0, choices.size()-1);
+				if(bestChoice == 0){
+					
+					bestChoice = getRandom(0, choices.size()-1);
+					bestBoard = choices.get(bestChoice);
+				}
+					
 				else bestBoard = choices.get(bestChoice);
 			}
 			
@@ -196,7 +200,6 @@ public class Player {
 		
 		rand = new Random();
 		int randomNum = rand.nextInt((max-min) + 1) + min;
-		//System.out.println(randomNum);
 		return randomNum;
 	}
 }

@@ -95,47 +95,83 @@ public class Main extends Application {
 
 	public static void main(String[] args) throws IOException {
 		
-//		launch(args);
+		launch(args);	
 		
-		game = new Game();
-		gameOver = false;
-		long startTime = System.currentTimeMillis();
-		long time;
-		int turn;
-		long nodesSearched;
-		
-		while(!gameOver){
-					
-			try{game.nextBoard();}
-			catch(NullPointerException npe){
-				
-				setGameOver();
-				break;
-			}
-			catch(IllegalArgumentException iae){
-				
-				setGameOver();
-				break;
-			}
-			catch(IndexOutOfBoundsException ioobe){
-				
-				setGameOver();
-				break;
-			}	
-			catch(ArithmeticException ae){
-				
-				setGameOver();
-				break;
-			}
-		}	
-		
-		game.currentBoard.printBoard(game.currentBoard.boardPlayer);//printHistory();
-		System.out.println("GAME OVER");
-		System.out.println("TOTAL TIME = " + (time = (System.currentTimeMillis() - startTime)/1000) + "." + (System.currentTimeMillis() - startTime)%100);				
-		System.out.println("TOTAL MOVES = " + (turn = game.currentBoard.turn));
-		System.out.println("NODES SEARCHED = " + (nodesSearched = game.nodesSearched));
-		System.out.println("NODES PER SECOND = " + nodesSearched/time);
-		System.out.println("NODES PER MOVE = " + nodesSearched/turn);
+//		int redWins = 0, blackWins = 0, drawn = 0, iteration = 0, blacks = 0, reds = 0;
+//		
+//		for(int i=0; i<10; i++){
+//			
+//			game = new Game();
+//			gameOver = false;
+//			long startTime = System.currentTimeMillis();
+//			long time;
+//			int turn;
+//			long nodesSearched;
+//		
+//			while(!gameOver){
+//						
+//				try{
+//					
+//					game.nextBoard();
+//					if(game.turn > 100){
+//						
+//						game.currentBoard.evaluate();
+//						blacks = game.currentBoard.blackKings + game.currentBoard.blackPieces;
+//						reds = game.currentBoard.redKings + game.currentBoard.redPieces;
+//						//System.out.println("Blacks: " + blacks + ". Reds: " + reds);
+//						break;
+//					}
+//				}
+//				catch(NullPointerException npe){
+//					
+//					setGameOver();
+//					break;
+//				}
+//				catch(IllegalArgumentException iae){
+//					
+//					setGameOver();
+//					break;
+//				}
+//				catch(IndexOutOfBoundsException ioobe){
+//					
+//					setGameOver();
+//					break;
+//				}	
+//				catch(ArithmeticException ae){
+//					
+//					setGameOver();
+//					break;
+//				}
+//			}	
+//			
+//			
+//			
+//			
+//			time = System.currentTimeMillis() - startTime;
+////			turn = game.currentBoard.turn;
+//			nodesSearched = game.nodesSearched;
+////			game.currentBoard.printBoard(game.currentBoard.boardPlayer);//printHistory();
+////			System.out.println("GAME OVER");
+////			System.out.println("TOTAL TIME = " + ((System.currentTimeMillis() - startTime)/1000) + "." + (System.currentTimeMillis() - startTime)%100);				
+////			System.out.println("TOTAL MOVES = " + (turn));
+//			System.out.println(iteration++ + ": NODES SEARCHED = " + (nodesSearched = game.nodesSearched));
+////			System.out.println("NODES PER MILLISECOND = " + nodesSearched/time);
+////			System.out.println("NODES PER MOVE = " + nodesSearched/turn);
+//			if(game.winner == 0) redWins++;
+//			if(game.winner == 1) blackWins++;
+//			if(game.winner == 2){ 
+//				
+////				if(blacks > reds) blackWins++;
+////				if(reds > blacks) redWins++;
+////				if(reds == blacks) 
+//				drawn++; System.out.println("DRAW");
+//			}
+////			System.out.print(".");
+//		}
+//		
+//		System.out.println("\nBLACK WINS: " + blackWins);
+//		System.out.println("RED WINS: " + redWins);
+//		System.out.println("DRAWS: " + drawn);
 	}
 	
 	public static void setGameOver(){
