@@ -10,6 +10,7 @@ public class CheckerBoard {
 	static int[][] black_adjacence;
 	static int[][] red_adjacence;
 	static int[] center;
+	static int[] edge;
 	
 	ArrayList<CheckerPiece> board; 
 	
@@ -41,6 +42,7 @@ public class CheckerBoard {
 		black_adjacence = Main.globals.BLACK_ADJACENCE;
 		red_adjacence = Main.globals.RED_ADJACENCE;
 		center = Main.globals.CENTER;
+		edge = Main.globals.EDGE;
 	}
 	
 	public CheckerBoard(ArrayList<CheckerPiece> inputBoard, 
@@ -50,14 +52,15 @@ public class CheckerBoard {
 		boardValue = value;
 		fromMove = from; toMove = to;
 		boardPlayer = player;
-		turn++; this.capture = capture;
+		this.turn = turn+1; this.capture = capture;
 		moveFromLast = move;
 		board = new ArrayList<CheckerPiece>();
 		for(int i=0; i<32; i++) board.add(new CheckerPiece(inputBoard.get(i)));
 		
 		black_adjacence = Main.globals.BLACK_ADJACENCE;
 		red_adjacence = Main.globals.RED_ADJACENCE;	
-		center = Main.globals.CENTER;		
+		center = Main.globals.CENTER;
+		edge = Main.globals.EDGE;
 	}
 			
 	public Vector<CheckerBoard> getChildren(int player){
@@ -94,7 +97,7 @@ public class CheckerBoard {
 							tempMove = "Black moved from " + currentPiece + " to " + target1;
 							
 							kinged = move(newBoard, currentPiece, target1, false);				// SWAP PIECES
-							movesList.add(new CheckerBoard(newBoard, player, tempMove, false, currentPiece, target1, player, evaluate())); 	// RECORD THE MOVE
+							movesList.add(new CheckerBoard(newBoard, turn, tempMove, false, currentPiece, target1, player, evaluate())); 	// RECORD THE MOVE
 							
 //							System.out.println("Moving Back");
 							move(newBoard, target1, currentPiece, kinged);				// SWAP THEM BACK						
@@ -155,7 +158,7 @@ public class CheckerBoard {
 							boolean kinged = false;
 							tempMove = "Red moved from " + currentPiece + " to " + target1;
 							kinged = move(newBoard, currentPiece, target1, false);				// SWAP PIECES
-							movesList.add(new CheckerBoard(newBoard, player, tempMove, false, currentPiece, target1, player, evaluate())); 	// RECORD THE MOVE							
+							movesList.add(new CheckerBoard(newBoard, turn, tempMove, false, currentPiece, target1, player, evaluate())); 	// RECORD THE MOVE							
 		//					System.out.println("Moving Back");
 							move(newBoard, target1, currentPiece, kinged);				// SWAP THEM BACK						
 							continue;
@@ -204,7 +207,7 @@ public class CheckerBoard {
 			for(int square=0; square<32; square++) currentBoard.add(new CheckerPiece(newBoard.get(square)));
 
 			tempMove += " by jumping from " + jumpFrom + " to " + currentPiece;
-			movesList.add(new CheckerBoard(currentBoard, player, tempMove, true, previousPiece, currentPiece, player, evaluate()));				// BOARD WITH THIS CAPTURE GOES ON THE LIST			
+			movesList.add(new CheckerBoard(currentBoard, turn, tempMove, true, previousPiece, currentPiece, player, evaluate()));				// BOARD WITH THIS CAPTURE GOES ON THE LIST			
 			
 			for(int neighbor=0; neighbor<currentBoard.get(currentPiece).numNeighbors(); neighbor++){
 				
@@ -245,7 +248,7 @@ public class CheckerBoard {
 			for(int square=0; square<32; square++) currentBoard.add(new CheckerPiece(newBoard.get(square)));
 			
 			tempMove += " by jumping from " + jumpFrom + " to " + currentPiece;
-			movesList.add(new CheckerBoard(currentBoard, player, tempMove, true, previousPiece, currentPiece, player, evaluate()));				// BOARD WITH THIS CAPTURE GOES ON THE LIST
+			movesList.add(new CheckerBoard(currentBoard, turn, tempMove, true, previousPiece, currentPiece, player, evaluate()));				// BOARD WITH THIS CAPTURE GOES ON THE LIST
 			
 			for(int neighbor=0; neighbor<currentBoard.get(currentPiece).numNeighbors(); neighbor++){
 				
@@ -434,9 +437,14 @@ public class CheckerBoard {
 	
 	public int evaluate(){
 		
+		int kingValue = 5;
+		int pawnValue = 1;
+		int centeringMove = 20;
+		
 		int value = 0;
 		
-		/* PIECE INFORMATION*/
+		/********************* PIECE INFORMATION ******************************/
+		
 		int redKings = 0, blackKings = 0, redPieces = 0, blackPieces = 0, redValue = 0, blackValue = 0;
 		
 		for(int i=0; i<32; i++){
@@ -447,30 +455,36 @@ public class CheckerBoard {
 			if(board.get(i).isRed() && !board.get(i).isKing()) redPieces += 1;				
 			if(board.get(i).isRed() && board.get(i).isKing()) redKings += 1;		
 		}
-		
-		
+				
 		try{
 			
-			blackValue = (blackKings*5)/(blackKings+blackPieces) + (blackPieces)/(blackKings+blackPieces);
-			redValue = (redKings*5)/(redKings+blackPieces) + (redPieces)/(redKings+redPieces);
+			blackValue = (blackKings*kingValue)/(blackKings+blackPieces+1) + (blackPieces*pawnValue)/(blackKings+blackPieces+1);
+			redValue = (redKings*kingValue)/(redKings+blackPieces+1) + (redPieces*pawnValue)/(redKings+redPieces+1);
+			
 			if(boardPlayer == 0) value = blackValue - redValue;
 			if(boardPlayer == 1) value = redValue - blackValue;
 		}
 		
 		catch(ArithmeticException ae){}
+		
 					
-		/* POSITION INFORMATION */
+		/********************* POSITION INFORMATION ***************************/
+		
 		for(int i=0; i<8; i++){ 
 			
-			if(center[i] == toMove){ 
-				
-				value += 5;//System.out.println("CENTER!");
-			}
-			//if(center[i] == toMove) 
+			if(center[i] != fromMove && center[i] == toMove)
+				value += centeringMove;
+			
+			if(center[i] == fromMove && center[i] != toMove)
+				value -= centeringMove;
 		}
 		
-		//System.out.println(value);
-		// ideas: more possible moves is good, less middle board space is better
+		for(int i=0; i<14; i++){
+			
+			if(edge[i] == toMove) value -= centeringMove;
+		}
+
+
 		return value;
 	}
 	

@@ -8,13 +8,24 @@ public class MiniMax implements Runnable{
 	boolean maximizingPlayer;
 	CheckerBoard startingBoard;
 	Thread thisThread;
+	static int nodesSearched;
+	Game currentGame;
 	
 	int value;
 	
-	public MiniMax(CheckerBoard node, int depth, int alpha, int beta, boolean maximizingPlayer, int player){
+	public MiniMax(Game game, CheckerBoard node, int depth, int alpha, int beta, boolean maximizingPlayer, int player){
 		
 		startingBoard = node;
 		max_depth = depth;
+		
+		//System.out.println("BOARDTURN: " + node.turn);
+		
+		//if(node.turn > 20) max_depth = depth+1; 
+		
+		//System.out.println(max_depth);
+		
+		currentGame = game;
+		
 		this.alpha = alpha;
 		this.beta = beta;
 		this.maximizingPlayer = maximizingPlayer;
@@ -37,6 +48,7 @@ public class MiniMax implements Runnable{
 			
 			for(int i=0; i<children.size(); i++){
 				
+				nodesSearched++;
 				int value = minimax(children.get(i), depth -1, alpha, beta, false, Math.abs(player - 1));
 				alpha = Math.max(alpha, value);
 				if(beta <= alpha) break;
@@ -53,6 +65,7 @@ public class MiniMax implements Runnable{
 			
 			for(int i=0; i<children.size(); i++){
 				
+				nodesSearched++;
 				int value = minimax(children.get(i), depth - 1, alpha, beta, true, player);
 				beta = Math.min(beta, value);
 				if(beta <= alpha) break;
@@ -66,5 +79,6 @@ public class MiniMax implements Runnable{
 	public void run() {
 		
 		value = minimax(startingBoard,max_depth,alpha,beta,maximizingPlayer,player);
+		currentGame.incrementNodesSearched(nodesSearched);
 	}
 }

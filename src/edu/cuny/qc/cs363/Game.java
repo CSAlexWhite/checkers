@@ -9,15 +9,18 @@ public class Game extends Task<Game>{
 	CheckerBoard currentBoard;
 	Vector<CheckerBoard> history;
 	Player p1, p2;
-	GUIController gameBoard;
-	int turn;
+	int turn; 
+	long nodesSearched;
+	double avgBranchingFactor;
 	Thread thisThread;
 	
 	public Game(){
 		
+		turn = 0;
+		//nodesSearched = 0;
 		//gameBoard = board;
-		p1 = new Player(1);
-		p2 = new Player(0);
+		p1 = new Player(this, 1);
+		p2 = new Player(this, 0);
 		history = new Vector<CheckerBoard>();
 		currentBoard = 	new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
 						//new CheckerBoard("OOOOOOOO KK OOOOOOOO KK OOOOO KK");
@@ -33,6 +36,12 @@ public class Game extends Task<Game>{
 		
 		history.add(nextMove);
 	}
+	
+	public void incrementNodesSearched(int increment){
+		
+		//System.out.println("INCREMENTED BY: " + increment);
+		nodesSearched += increment;
+	}
 
 	public CheckerBoard nextBoard() throws IllegalArgumentException{
 		
@@ -47,7 +56,7 @@ public class Game extends Task<Game>{
 		
 		else {
 			
-			currentBoard = p2.move2(currentBoard);
+			currentBoard = p2.move(currentBoard);
 			add(currentBoard);
 			if(currentBoard.gameOver()) System.out.println("BLACK WINS");
 			return currentBoard;
@@ -81,37 +90,7 @@ public class Game extends Task<Game>{
 		add(tempBoard);
 		
 		return this;
-		
-//		int move = 0;
-//		while(tempBoard != null){
-//			
-//			try {
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			
-//			add(tempBoard = p2.move(tempBoard));
-//			
-//			tempBoard.printBoard(move);
-//			//gameBoard.setup(tempBoard);
-//			
-//			try {
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			
-//			add(tempBoard = p1.move(tempBoard));
-//			//gameBoard.setup(tempBoard);
-//			tempBoard.printBoard(move);
-//			
-//			if(move++ >200) break;
-//		}
-//		
-//		printHistory();		
+	
 	}
 	
 }

@@ -54,19 +54,19 @@ public class Main extends Application {
 									
 									setGameOver();
 									System.out.println("GAME OVER");
-									//game.printHistory();
+									game.printHistory();
 								}
 								catch(IllegalArgumentException iae){
 									
 									setGameOver();
 									System.out.println("GAME OVER");
-									//game.printHistory();
+									game.printHistory();
 								}
 								catch(IndexOutOfBoundsException ioobe){
 									
 									setGameOver();
 									System.out.println("GAME OVER");
-									//game.printHistory();
+									game.printHistory();
 								}
 							}
 						});
@@ -95,37 +95,47 @@ public class Main extends Application {
 
 	public static void main(String[] args) throws IOException {
 		
-		launch(args);
+//		launch(args);
 		
-//		game = new Game();
-//		gameOver = false;
-//		long startTime = System.currentTimeMillis();
-//		
-//		while(!gameOver){
-//					
-//			try{game.nextBoard();}
-//			catch(NullPointerException npe){
-//				
-//				setGameOver();
-//				System.out.println("GAME OVER");
-//				System.out.println("TOTAL TIME = " + (System.currentTimeMillis() - startTime)/1000 + "." + (System.currentTimeMillis() - startTime)%100);
-//				//game.printHistory();
-//			}
-//			catch(IllegalArgumentException iae){
-//				
-//				setGameOver();
-//				System.out.println("GAME OVER");
-//				System.out.println("TOTAL TIME = " + (System.currentTimeMillis() - startTime)/1000 + "." + (System.currentTimeMillis() - startTime)%100);
-//				//game.printHistory();
-//			}
-//			catch(IndexOutOfBoundsException ioobe){
-//				
-//				setGameOver();
-//				System.out.println("GAME OVER");
-//				System.out.println("TOTAL TIME = " + (System.currentTimeMillis() - startTime)/1000 + "." + (System.currentTimeMillis() - startTime)%100);
-//				//game.printHistory();
-//			}			
-//		}	
+		game = new Game();
+		gameOver = false;
+		long startTime = System.currentTimeMillis();
+		long time;
+		int turn;
+		long nodesSearched;
+		
+		while(!gameOver){
+					
+			try{game.nextBoard();}
+			catch(NullPointerException npe){
+				
+				setGameOver();
+				break;
+			}
+			catch(IllegalArgumentException iae){
+				
+				setGameOver();
+				break;
+			}
+			catch(IndexOutOfBoundsException ioobe){
+				
+				setGameOver();
+				break;
+			}	
+			catch(ArithmeticException ae){
+				
+				setGameOver();
+				break;
+			}
+		}	
+		
+		game.currentBoard.printBoard(game.currentBoard.boardPlayer);//printHistory();
+		System.out.println("GAME OVER");
+		System.out.println("TOTAL TIME = " + (time = (System.currentTimeMillis() - startTime)/1000) + "." + (System.currentTimeMillis() - startTime)%100);				
+		System.out.println("TOTAL MOVES = " + (turn = game.currentBoard.turn));
+		System.out.println("NODES SEARCHED = " + (nodesSearched = game.nodesSearched));
+		System.out.println("NODES PER SECOND = " + nodesSearched/time);
+		System.out.println("NODES PER MOVE = " + nodesSearched/turn);
 	}
 	
 	public static void setGameOver(){
@@ -224,5 +234,6 @@ public class Main extends Application {
 			/* 31 */{27,-1,-1,-1}};		
 	
 		static final int[] CENTER = new int[] {9,10,13,14,17,18,21,22};
+		static final int[] EDGE = new int[] {0,1,2,3,7,15,23,31,30,29,28,24,16,8};
 	}	
 }

@@ -67,11 +67,11 @@ public class GUIController implements Initializable, Runnable{
 //		squares[2].setGraphic(redView[2]);
 	}
 	
-	public void begin(){
-		
-		Game checkerGame = new Game();
-		checkerGame.thisThread.start();
-	}
+//	public void begin(){
+//		
+//		Game checkerGame = new Game();
+//		checkerGame.thisThread.start();
+//	}
 	
 
 	@Override

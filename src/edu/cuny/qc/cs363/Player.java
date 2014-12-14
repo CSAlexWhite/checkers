@@ -10,12 +10,14 @@ public class Player {
 	CheckerBoard lastMove;
 	Vector<CheckerBoard> choices;
 	static Random rand;
+	Game currentGame;
 	
-	public Player(int assignedNumber){
+	public Player(Game game, int assignedNumber){
 			
 		playerNumber = assignedNumber;
 		if(assignedNumber == 0) black = true;
 		else black = false;
+		currentGame = game;
 	}
 	
 	public void go(){
@@ -32,7 +34,7 @@ public class Player {
 		
 		for(int i=0; i<choices.size(); i++){
 			
-			MiniMax decision = new MiniMax(inBoard, 8, Integer.MIN_VALUE, Integer.MAX_VALUE,  true, playerNumber);
+			MiniMax decision = new MiniMax(currentGame, inBoard, 8, Integer.MIN_VALUE, Integer.MAX_VALUE,  true, playerNumber);
 			int value = decision.value;
 			
 			if(value > bestValue){
@@ -80,7 +82,7 @@ public class Player {
 		
 		for(int i=0; i<choices.size(); i++){
 			
-			MiniMax decision = new MiniMax(inBoard, 8, Integer.MIN_VALUE, Integer.MAX_VALUE,  true, playerNumber);
+			MiniMax decision = new MiniMax(currentGame, inBoard, 8, Integer.MIN_VALUE, Integer.MAX_VALUE,  true, playerNumber);
 			int value = decision.value;
 			
 			if(value > bestValue){
