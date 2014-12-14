@@ -441,7 +441,7 @@ public class CheckerBoard {
 		int kingValue = 10;
 		int pawnValue = 2;
 		int centeringMove = 10;
-		int backRow = 5;
+		int backRow = 10;
 		
 		int value = 0;
 		
@@ -497,6 +497,25 @@ public class CheckerBoard {
 		}
 		
 		value -= count * backRow;
+		
+		/* MOVING FORWARD IS GOOD OTHERWISE */
+		
+		if(boardPlayer == 0) value += toMove - fromMove;
+		if(boardPlayer == 1) value += fromMove - toMove;
+		
+		/********************* EXTENUATING CIRCUMSTANCES **********************/
+		
+		/* ADD 1000 AND ENTER A DIFFERENT CLASS OF INSTRUCTIONS */
+		
+		/* TRYING TO DRAW */
+		
+		
+		/* TRYING TO CORNER OPPONENT'S LAST PIECE*/
+		
+		
+		/* BLOCKING IN IF POSSIBLE */
+		
+		/* MOVING TOWARD THE CENTER IN GROUPS WHEN FEW PIECES ARE LEFT */
 
 		return value;
 	}

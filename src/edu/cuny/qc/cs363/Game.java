@@ -57,7 +57,7 @@ public class Game extends Task<Game>{
 			if(currentBoard.gameOver()){ 
 				
 				winner = 0;
-				//System.out.println("RED WINS");
+				System.out.println("RED WINS");
 			}
 			return currentBoard;
 		}
@@ -69,7 +69,7 @@ public class Game extends Task<Game>{
 			if(currentBoard.gameOver()){ 
 				
 				winner = 1;
-				//System.out.println("BLACK WINS");
+				System.out.println("BLACK WINS");
 			}
 			return currentBoard;
 		}

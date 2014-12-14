@@ -74,6 +74,11 @@ public class GUIController implements Initializable, Runnable{
 //	}
 	
 
+	public void fromMove(){
+		
+		
+	}
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
