@@ -64,7 +64,7 @@ public class Game extends Task<Game>{
 		
 		else {
 			
-			currentBoard = p2.move1(currentBoard);
+			currentBoard = p2.move2(currentBoard);
 			add(currentBoard);
 			if(currentBoard.gameOver()){ 
 				
