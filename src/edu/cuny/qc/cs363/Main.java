@@ -42,37 +42,40 @@ public class Main extends Application {
 				@Override
 				public Void call() throws Exception {
 					
-//					while(!gameOver){
-//						
-//						Platform.runLater(new Runnable(){
-//							
-//							@Override
-//							public void run(){
-//								
-//								try{gameBoard.setup(game.nextBoard());}
-//								catch(NullPointerException npe){
-//									
-//									setGameOver();
-//									System.out.println("GAME OVER");
-//									game.printHistory();
-//								}
-//								catch(IllegalArgumentException iae){
-//									
-//									setGameOver();
-//									System.out.println("GAME OVER");
-//									game.printHistory();
-//								}
-//								catch(IndexOutOfBoundsException ioobe){
-//									
-//									setGameOver();
-//									System.out.println("GAME OVER");
-//									game.printHistory();
-//								}
-//							}
-//						});
-//
-//						Thread.sleep(500);
-//					}
+					while(!gameOver){
+						
+						Platform.runLater(new Runnable(){
+							
+							@Override
+							public void run(){
+								
+								try{gameBoard.setup(game.nextBoard());}
+								catch(NullPointerException npe){
+									
+									npe.printStackTrace();
+									setGameOver();
+									System.out.println("GAME OVER");
+									game.printHistory();
+								}
+								catch(IllegalArgumentException iae){
+									
+									iae.printStackTrace();
+									setGameOver();
+									System.out.println("GAME OVER");
+									game.printHistory();
+								}
+								catch(IndexOutOfBoundsException ioobe){
+									
+									ioobe.printStackTrace();
+									setGameOver();
+									System.out.println("GAME OVER");
+									game.printHistory();
+								}
+							}
+						});
+
+						Thread.sleep(500);
+					}
 					
 					return null;		
 				}
@@ -274,5 +277,6 @@ public class Main extends Application {
 	
 		static final int[] CENTER = new int[] {9,10,13,14,17,18,21,22};
 		static final int[] EDGE = new int[] {0,1,2,3,7,15,23,31,30,29,28,24,16,8};
+		static final int[] INNEREDGE = new int[] {4,5,6,11,19,27,26,25,20,12};
 	}	
 }

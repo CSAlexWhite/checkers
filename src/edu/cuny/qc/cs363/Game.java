@@ -2,9 +2,7 @@ package edu.cuny.qc.cs363;
 
 import java.util.Vector;
 
-import javafx.concurrent.Task;
-
-public class Game extends Task<Game>{
+public class Game{
 	
 	CheckerBoard currentBoard;
 	Vector<CheckerBoard> history;
@@ -21,17 +19,10 @@ public class Game extends Task<Game>{
 		turn = 0;
 		nodesSearched = 0;
 		//gameBoard = board;
-		p1 = new Player(this, 1);
-		p2 = new Player(this, 0);
+		p1 = new Player(1);
+		p2 = new Player(2);
 		history = new Vector<CheckerBoard>();
-		currentBoard = 	//new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
-						//new CheckerBoard("OOOOOOOO KK OOOOOOOO KK OOOOO KK");
-						new CheckerBoard("XX O   X   O  Q K  X   O   QO O ");
-						//new CheckerBoard("    XXXX                OOOO    ");
-		//currentBoard.printBoard(0);
-		
-		thisThread = new Thread(this);
-		
+		currentBoard = 	new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
 	}
 	
 	public void add(CheckerBoard nextMove){
@@ -57,19 +48,19 @@ public class Game extends Task<Game>{
 			if(currentBoard.gameOver()){ 
 				
 				winner = 0;
-				System.out.println("RED WINS");
+				System.out.println("BLACK WINS");
 			}
 			return currentBoard;
 		}
 		
 		else {
 			
-			currentBoard = p2.move2(currentBoard);
+			currentBoard = p2.badmove(currentBoard);
 			add(currentBoard);
 			if(currentBoard.gameOver()){ 
 				
 				winner = 1;
-				System.out.println("BLACK WINS");
+				System.out.println("RED WINS");
 			}
 			return currentBoard;
 		}
@@ -79,30 +70,16 @@ public class Game extends Task<Game>{
 		
 		try{
 			
-			for (int i=0; i<history.size(); i++) history.get(i).printBoard(i);
+			for (int i=0; i<history.size(); i++){ 
+				
+				history.get(i).printBoard();
+				history.get(i).printTopography();
+			}
 		}
 		
 		catch (NullPointerException npe){ 
 			
 			System.out.println("\nGAME OVER");
 		}
-	}
-
-	@Override
-	public void run() {
-		
-	}
-
-	@Override
-	protected Game call() throws Exception {
-			
-		CheckerBoard tempBoard = p1.move(currentBoard);
-		
-		//gameBoard.setup(tempBoard);	
-		add(tempBoard);
-		
-		return this;
-	
-	}
-	
+	}	
 }
