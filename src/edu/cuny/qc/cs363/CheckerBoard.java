@@ -208,7 +208,6 @@ public class CheckerBoard {
 			for(int square=0; square<32; square++) currentBoard.add(new CheckerPiece(newBoard.get(square)));
 
 			tempMove += " by jumping from " + jumpFrom + " to " + currentPiece;
-			movesList.add(new CheckerBoard(currentBoard, turn, tempMove, true, previousPiece, currentPiece, player, evaluate()));				// BOARD WITH THIS CAPTURE GOES ON THE LIST			
 			
 			for(int neighbor=0; neighbor<currentBoard.get(currentPiece).numNeighbors(); neighbor++){
 				
@@ -234,9 +233,9 @@ public class CheckerBoard {
 					jump(player, currentBoard, movesList, currentPiece, jump, justKinged);			// JUMP
 				}					
 			}	
-			
+			movesList.add(new CheckerBoard(currentBoard, turn, tempMove, true, previousPiece, currentPiece, player, evaluate()));				// BOARD WITH THIS CAPTURE GOES ON THE LIST			
 			move(currentBoard, currentPiece, previousPiece, justKinged);
-		
+			
 			return;
 		}
 		
@@ -520,8 +519,8 @@ public class CheckerBoard {
 	
 	public void printBoard(int turn){//, int number){
 
-//		System.out.println("\nTurn " + turn);//  + " Choice " + number);
-//		System.out.println(moveFromLast);
+		System.out.println("\nTurn " + turn);//  + " Choice " + number);
+		System.out.println(moveFromLast);
 		System.out.println("  ---------------");
 		int position = 0;
 		for(int i=0; i<8; i++){

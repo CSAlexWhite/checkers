@@ -42,37 +42,37 @@ public class Main extends Application {
 				@Override
 				public Void call() throws Exception {
 					
-					while(!gameOver){
-						
-						Platform.runLater(new Runnable(){
-							
-							@Override
-							public void run(){
-								
-								try{gameBoard.setup(game.nextBoard());}
-								catch(NullPointerException npe){
-									
-									setGameOver();
-									System.out.println("GAME OVER");
-									game.printHistory();
-								}
-								catch(IllegalArgumentException iae){
-									
-									setGameOver();
-									System.out.println("GAME OVER");
-									game.printHistory();
-								}
-								catch(IndexOutOfBoundsException ioobe){
-									
-									setGameOver();
-									System.out.println("GAME OVER");
-									game.printHistory();
-								}
-							}
-						});
-
-						Thread.sleep(500);
-					}
+//					while(!gameOver){
+//						
+//						Platform.runLater(new Runnable(){
+//							
+//							@Override
+//							public void run(){
+//								
+//								try{gameBoard.setup(game.nextBoard());}
+//								catch(NullPointerException npe){
+//									
+//									setGameOver();
+//									System.out.println("GAME OVER");
+//									game.printHistory();
+//								}
+//								catch(IllegalArgumentException iae){
+//									
+//									setGameOver();
+//									System.out.println("GAME OVER");
+//									game.printHistory();
+//								}
+//								catch(IndexOutOfBoundsException ioobe){
+//									
+//									setGameOver();
+//									System.out.println("GAME OVER");
+//									game.printHistory();
+//								}
+//							}
+//						});
+//
+//						Thread.sleep(500);
+//					}
 					
 					return null;		
 				}

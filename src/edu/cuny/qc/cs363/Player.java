@@ -33,7 +33,7 @@ public class Player {
 		Vector<CheckerBoard> capturingMoves = new Vector<CheckerBoard>();
 		for(int i=0; i<choices.size(); i++){
 
-			MiniMax decision = new MiniMax(currentGame, choices.get(i), 8, Integer.MIN_VALUE, Integer.MAX_VALUE,  true, playerNumber);
+			MiniMax decision = new MiniMax(currentGame, choices.get(i), 6, Integer.MIN_VALUE, Integer.MAX_VALUE,  true, playerNumber);
 			int value = decision.value;
 			
 			if(value > bestValue){

@@ -24,9 +24,9 @@ public class Game extends Task<Game>{
 		p1 = new Player(this, 1);
 		p2 = new Player(this, 0);
 		history = new Vector<CheckerBoard>();
-		currentBoard = 	new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
+		currentBoard = 	//new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
 						//new CheckerBoard("OOOOOOOO KK OOOOOOOO KK OOOOO KK");
-						//new CheckerBoard("K                   OO    K     ");
+						new CheckerBoard("XX O   X   O  Q K  X   O   QO O ");
 						//new CheckerBoard("    XXXX                OOOO    ");
 		//currentBoard.printBoard(0);
 		
