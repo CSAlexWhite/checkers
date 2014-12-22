@@ -10,11 +10,22 @@ public class Player {
 	Vector<CheckerBoard> choices;
 	static Random rand;
 	
+	/*
+	 * The player makes its choice given the current state of the board, in the
+	 * move function called by the Game object.
+	 */
 	public Player(int assignedNumber){
 
 		playerNumber = assignedNumber-1;
 	}
 
+	/*
+	 * The move function has a choice given the current board's successors.  It
+	 * first finds any capturing moves, and if there are any, only analyzes those.
+	 * If there's only one, it chooses it.  If there are multiple capturing moves,
+	 * or no capturing moves and multiple regular moves, it uses minimax to decide
+	 * which is the best choice.
+	 */
 	public CheckerBoard move(CheckerBoard inBoard) throws IllegalArgumentException{
 		
 		int bestChoice = 0;
@@ -48,7 +59,7 @@ public class Player {
 			
 			for(int i=0; i<regularMoves.size(); i++){
 				
-				regularMoves.get(i).setMiniMax(value = MiniMax.alphabeta(choices.get(i), 5, 
+				regularMoves.get(i).setMiniMax(value = MiniMax.alphabeta(choices.get(i), 7, 
 						Integer.MIN_VALUE, Integer.MAX_VALUE,  true, playerNumber, subtime));
 				
 				if(value > bestValue){
@@ -78,6 +89,9 @@ public class Player {
 		}	   	return choices.get(bestChoice);
 	}
 	
+	/*
+	 * A random player to test against.
+	 */
 	public CheckerBoard badmove(CheckerBoard inBoard) throws IllegalArgumentException{
 	
 		Vector<CheckerBoard> choices = inBoard.getChildren(playerNumber);
@@ -87,7 +101,6 @@ public class Player {
 			
 	public static int getRandom(int min, int max){
 		
-	
 		try{
 			
 			rand = new Random();

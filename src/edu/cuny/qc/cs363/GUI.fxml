@@ -30,7 +30,7 @@
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="75.0" minHeight="75.0" prefHeight="75.0" vgrow="NEVER" />
             <RowConstraints maxHeight="75.0" minHeight="75.0" prefHeight="75.0" vgrow="NEVER" />
             <RowConstraints maxHeight="75.0" minHeight="75.0" prefHeight="75.0" vgrow="NEVER" />
@@ -42,29 +42,7 @@
           <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <VBox prefHeight="51.0" prefWidth="340.0" GridPane.columnSpan="10">
-               <children>
-                  <MenuBar prefHeight="30.0" prefWidth="620.0">
-                    <menus>
-                      <Menu mnemonicParsing="false" text="File">
-                        <items>
-                          <MenuItem mnemonicParsing="false" text="Close" />
-                        </items>
-                      </Menu>
-                      <Menu mnemonicParsing="false" text="Edit">
-                        <items>
-                          <MenuItem mnemonicParsing="false" text="Delete" />
-                        </items>
-                      </Menu>
-                      <Menu mnemonicParsing="false" text="Help">
-                        <items>
-                          <MenuItem mnemonicParsing="false" text="About" />
-                        </items>
-                      </Menu>
-                    </menus>
-                  </MenuBar>
-               </children>
-            </VBox>
+            <VBox prefHeight="51.0" prefWidth="340.0" GridPane.columnSpan="10" />
             <Pane maxHeight="75.0" maxWidth="75.0" minHeight="75.0" minWidth="75.0" prefHeight="75.0" prefWidth="75.0" GridPane.columnIndex="2" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.vgrow="NEVER">
                <effect>
                   <ImageInput>

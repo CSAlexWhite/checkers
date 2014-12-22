@@ -7,39 +7,36 @@ public class Game{
 	CheckerBoard currentBoard;
 	Vector<CheckerBoard> history;
 	Player p1, p2;
-	int turn; 
-	long nodesSearched;
-	double avgBranchingFactor;
-	Thread thisThread;
-	int winner;
+	int turn, winner;
 	
+	/*
+	 * Starts a new checkers game with the usual configuration.
+	 */
 	public Game(){
 		
 		winner = -1;
 		turn = 0;
-		nodesSearched = 0;
-		//gameBoard = board;
 		p1 = new Player(1);
 		p2 = new Player(2);
 		history = new Vector<CheckerBoard>();
 		currentBoard = 	new CheckerBoard("OOOOOOOOOOOO        XXXXXXXXXXXX");
 	}
 	
+	/*
+	 * This class also tracks the history of the game.
+	 */
 	public void add(CheckerBoard nextMove){
 		
 		history.add(nextMove);
 	}
 	
-	public void incrementNodesSearched(int increment){
-		
-		//System.out.println("INCREMENTED BY: " + increment);
-		nodesSearched += increment;
-	}
-
+	/*
+	 * When asked to move, it asks for which player, then asks the player
+	 * for its best choice given the current board.
+	 */
 	public CheckerBoard nextBoard() throws IllegalArgumentException{
 		
 		turn++;
-		if(turn>100) winner = 2;
 		
 		if(turn%2 == 0){ 
 			
@@ -66,6 +63,9 @@ public class Game{
 		}
 	}
 	
+	/*
+	 * At the end of a game, we like to print the history to review it.
+	 */
 	public void printHistory(){
 		
 		try{

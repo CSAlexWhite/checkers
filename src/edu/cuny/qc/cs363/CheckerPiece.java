@@ -2,9 +2,9 @@ package edu.cuny.qc.cs363;
 
 public class CheckerPiece {
 	
-	private boolean empty; // whether there is a piece
-	private boolean black;  // whether this is my piece or the other's
-	private boolean king;   // whether it is a king
+	private boolean empty; 
+	private boolean black;  
+	private boolean king;   
 	public char type;  
 	public int position;
 	

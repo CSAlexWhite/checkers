@@ -7,54 +7,60 @@ public class CheckerBoard {
 	
 	/************** STATIC VARIABLES *****************/
 	
-	static int[][] 	black_adjacence,
-	 				red_adjacence;
-	static int[] center,
-				 edge,
-				 inneredge,
-				 blackPosition,
-				 redPosition,
-				 boardTopography;
+	static int[][] 	black_adjacence,	// WHERE BLACK CAN MOVE
+	 				red_adjacence;		// WHERE RED CAN MOVE
+	static int[] 	center,				// WHAT'S THE CENTER OF THE BAORD
+				 	edge,				// WHAT'S THE EDGE OF THE BAORD
+				 	inneredge;			// WHATS NEXT TO THE EDGE			 	
 	
+	/* THESE VALUES STORE THE INITIAL POSITION WEIGHTS GIVEN NO INFORMATION */
+	static int[] BLACKPOSITION = new int[] {	12,12,12,12,
+												8,6,6,6,
+												6,2,2,10,
+												10,2,2,8,
+												10,2,2,12,
+												14,2,2,12,
+												14,2,2,16,
+												18,14,14,20,
+												20,20,20,20};
 	
-	static final int[] BLACKPOSITION = new int[] {	6, 6, 6, 6,
-													6, 6, 6, 6,
-													8, 2, 2, 10,
-													12,2, 2, 10,
-													12,2, 2, 14,
-													16,2, 2, 14,
-													16,14,14,18,
-													20,20,20,20};
-	static final int[] REDPOSITION = new int[] {	
-													20,20,20,20,
-													18,14,14,16,
-													14,2, 2, 16,
-													14,2, 2, 12,
-													10,2, 2, 12,
-													10,2, 2, 8,
-													6, 6, 6, 6,
-													6, 6, 6, 6};	
-	ArrayList<CheckerPiece> board; 
-	
-	int possibleMoves, 
-	boardPlayer, 
-	turn, 
-	captures,
-	miniMax,
-	jumpStart;
-
-	boolean capture;
+	static int[] REDPOSITION = new int[] {		20,20,20,20,
+												20,14,14,18,
+												16,2,2,14,1,
+												12,2,2,14,
+												12,2,2,10,
+												8,2,2,10,
+												10,2,2,6,
+												6,6,6,8,
+												12,12,12,13};										
 	
 	/*********** BOARD VALUE VARIABLES **************/
 	
-	int toMove, fromMove, jumped;
-	Vector<Integer> jumpedPieces;
-		
+	int possibleMoves, 	// HOW MANY SUCCESSORS THIS BOARD HAS
+	boardPlayer, 		// WHICH PLAYER IS LOOKING AT THIS BOARD
+	turn, 				// WHAT OVERALL TURN IS T
+	captures,			// HOW MANY CAPTURES (ON THE LAST MOVE) LED TO THIS BOARD
+	miniMax;			// WHAT THE MINIMAX VALUE OF THIS BOARD IS
+	
+	int[] boardTopography; 	// WHAT THE SURFACE SHAPE OF THIS BOARD LOOKS LIKE
+							// AFTER POSITION UPDATES
+	boolean capture;	// WHETHER THIS BOARD RESULTED FROM A CAPTURE, OR NOT
+	
+	/*********** BOARD MOVING VARIABLES **************/
+	
+	ArrayList<CheckerPiece> board;				// THE REPRESENTATION OF THE BOARD
+	int toMove, fromMove, jumped, jumpStart;	// TO TRACK WHAT MOVES HAPPENED
+	Vector<Integer> jumpedPieces;				// TO TRACK EXACTLY WHAT PIECES
+												// WERE CAPTURED
+	/*
+	 * The constructor for the initial Checkerboard (also used during the
+	 * tournament with modifications)	
+	 */
 	public CheckerBoard(String inputBoard){
 		
-		capture = false; 
-		captures = 0;
-		turn = -1;
+		capture = false; 	
+		captures = 0;		
+		turn = -1;			// NEED TO INITIALIZE VARIABLES
 		jumped = -1;
 		jumpedPieces = new Vector<Integer>();
 		board = new ArrayList<CheckerPiece>();
@@ -70,6 +76,9 @@ public class CheckerBoard {
 		boardTopography = new int[32];
 	}
 	
+	/*
+	 * This constructor is used by the successor function: getChildren()
+	 */
 	public CheckerBoard(ArrayList<CheckerPiece> inputBoard, 
 			int turn, boolean capture,
 			int from, int to, int player, int value,
@@ -77,16 +86,16 @@ public class CheckerBoard {
 
 		fromMove = from; 
 		toMove = to;
-		boardPlayer = player;
+		boardPlayer = player;		// NEED TO INITIALIZE VARIABLES
 		this.turn = turn+1; 
 		this.capture = capture; 
 		this.jumped = jumped;
 		
-		board = copy(inputBoard);
+		board = copy(inputBoard);	// WANT A NEW BOARD, NOT A REFERENCE	
 		
-		jumpedPieces = new Vector<Integer>();
-		for(int i=0; i<captures.size(); i++) jumpedPieces.add(captures.get(i));
-		
+		/* TO TRACK THE PIECES THAT HAVE BEEN JUMPED */
+		jumpedPieces = new Vector<Integer>();		
+		for(int i=0; i<captures.size(); i++) jumpedPieces.add(captures.get(i));		
 		if(jumped != -1) jumpedPieces.add(jumped);
 		
 		black_adjacence = Main.globals.BLACK_ADJACENCE;
@@ -97,13 +106,24 @@ public class CheckerBoard {
 		
 		boardTopography = new int[32];
 	}
-			
+	
+	/*
+	 * This is the heart and soul of this object, the successor function.  
+	 * Explanation of algorithm: 
+	 * (1) Search all board squares, find 'our' pieces
+	 * (2) Search all of our pieces, find their neighbors
+	 * (3) Search all neighbors, find empty spaces, moved to them, record that 
+	 * 	   position, then move back.
+	 * (4) Over all neighbors, find enemies, call jump() on them, which returns
+	 *     the new position, record it, move back.
+	 */
 	public Vector<CheckerBoard> getChildren(int player){
 		
+		/* START WITH AN EMPTY LIST OF POSSIBLE MOVES*/
 		Vector<CheckerBoard> movesList = new Vector<CheckerBoard>();		
 		if(player == 0){
 			
-			CheckerPiece targetSquare = null;			
+			CheckerPiece targetSquare = null;		
 			for(int currentPiece=0; currentPiece<32; currentPiece++){			
 				
 				if(board.get(currentPiece).isEmpty()) continue; 				
@@ -230,6 +250,13 @@ public class CheckerBoard {
 		return movesList;
 	}
 	
+	/*
+	 * Jump performs the following steps:
+	 * (1) Removes the recently captured piece
+	 * (2) Tests to see if it can jump again
+	 * (3) If it can it does
+	 * (4) Once done jumping it returns the whole move.
+	 */
 	private CheckerBoard jump(int player, ArrayList<CheckerPiece> currentBoard, 
 			Vector<CheckerBoard> movesList, int previousPiece, int currentPiece, 
 			int jumpedSquare, boolean justKinged){ 
@@ -327,13 +354,19 @@ public class CheckerBoard {
 				jumpStart, jumpEnd, player, evaluate(), jumpedSquare, jumpedPieces);
 	}
 	
+	/*
+	 * The move function basically swaps pieces, ensuring that any moves from 
+	 * inner squares to the kinging end results in a king, but then records at a
+	 * crowning took place so that the move back can reverse the kinging and we
+	 * don't get new kings on the current board. 
+	 */
 	private boolean move(
 			ArrayList<CheckerPiece> board, int from, int to, boolean justKinged){
 			
 		if(!board.get(from).isKing()){
 			if(board.get(from).isBlack()){
 				
-				if(to>27){ // DOESN'T MATTER IF WE RE-KING
+				if(to>27){ 
 										
 					board.get(from).setEmpty();
 					board.get(to).setBlack();
@@ -434,6 +467,9 @@ public class CheckerBoard {
 		return false;
 	}
 	
+	/*
+	 * The gameOver function tests for victory conditions.  
+	 */
 	public boolean gameOver(){
 		
 		int red = 0, black = 0;
@@ -442,27 +478,30 @@ public class CheckerBoard {
 			if(board.get(i).isRed()) red++;
 			if(board.get(i).isBlack()) black++;
 			if(board.get(i).isEmpty()) continue;
+			if(getChildren(boardPlayer).isEmpty()) return true;
 		}
 		
 		if(red == 0) return true;	
 		if(black == 0) return true;
-		
+				
 		return false;
 	}
-	
-	public void printArray(ArrayList<CheckerPiece> input){
 		
-		for(int i=0; i<32; i++) System.out.println(i + "\t" + input.get(i).type);
-		System.out.println();
-	}
-		
+	/*
+	 * The evaluation function measures the value of the board based on 
+	 * criteria given below.
+	 */
 	public int evaluate(){
 		 
-		int kingValue = 50,
-		pawnValue = 10,
-		positionWeight = 5,		// minimize the weights I have to come up with
+		/* THESE ARE USER-DEFINED VARIABLES, WOULD LIKE TO FIND THE RIGHT ONES */
+		int blackKingValue = 50,
+		blackPawnValue = 10,
+		redKingValue = 50,
+		redPawnValue = 10,
+		positionWeight = 5,		
 		victory = 10000,
 		
+		/* THESE ARE COUNTING VARIABLES, FOR THE MATERIAL EVALUATION */
 		redKings = 0, 
 		blackKings = 0, 
 		redPawns = 0, 
@@ -471,11 +510,17 @@ public class CheckerBoard {
 		blackPieces = 0,
 		totalPieces = 0;
 		
+		/* THESE ARE VARIABLES FOR THE RETURNED VALUE AND THE TOPOGRAPHY */
 		int value = 0;
 		int[] zones = new int[32];
 		
-		/********************* PIECE INFORMATION ******************************/
+		/********************* MATERIAL EVALUATION ******************************/
 		
+		/*
+		 * In this section, we count the pieces of each kind and apply functions
+		 * using those calculations and the values of the pieces to update the 
+		 * value to be returned.
+		 */
 		int redValue = 0, blackValue = 0;
 		
 		for(int i=0; i<32; i++){
@@ -493,11 +538,11 @@ public class CheckerBoard {
 				
 		try{
 			
-			blackValue = (blackKings*kingValue)/(blackKings+blackPawns+1) + 
-						 (blackPawns*pawnValue)/(blackKings+blackPawns+1);
+			blackValue = (blackKingValue = (blackKings*blackKingValue)/(blackKings+blackPawns+1)) + 
+						 (blackPawnValue = (blackPawns*blackPawnValue)/(blackKings+blackPawns+1));
 			
-			redValue = 	 (redKings*kingValue)/(redKings+blackPawns+1) + 
-						 (redPawns*pawnValue)/(redKings+redPawns+1);
+			redValue = 	 (redKingValue = (redKings*redKingValue)/(redKings+blackPawns+1)) + 
+						 (redPawnValue = (redPawns*redPawnValue)/(redKings+redPawns+1));
 			
 			if(blackValue == 0 && boardPlayer == 1) value += victory;
 			if(redValue == 0 && boardPlayer == 0) value += victory;
@@ -511,9 +556,13 @@ public class CheckerBoard {
 		catch(ArithmeticException ae){}
 		
 						
-		/********************* EXTENUATING CIRCUMSTANCES **********************/
+		/********************* POSITION EVALUATION **********************/
 				
-		
+		/*
+		 * In his section, we update the position weights based on the current
+		 * state of the game.  Note, centering is good when winning, bad
+		 * when losing.
+		 */
 		int adjustment = (int) (Math.abs(blackPieces - redPieces) * (5 - Math.log(totalPieces)));
 
 		if(blackPieces > redPieces){
@@ -560,6 +609,12 @@ public class CheckerBoard {
 			
 		/************************** BOARD TOPOGRAPHY  *************************/
 		
+		/*
+		 * In this section we further update the topography of the board, by 
+		 * finding the neighbor squares of pieces and their neighbors neighbors 
+		 * and updating those weights, reasoning that it's bad to be next to
+		 * an enemy, and good to be next to a friend, in general.
+		 */
 		try{
 			
 		if (this.boardPlayer == 0){
@@ -713,10 +768,13 @@ public class CheckerBoard {
 	    
 		/********************* POSITION INFORMATION ***************************/
 		
+		/*
+		 * Here we do a final update, based on to which square the piece is 
+		 * moving.
+		 */
 		if(boardPlayer == 0) value += BLACKPOSITION[toMove] * positionWeight;
 		if(boardPlayer == 1) value += REDPOSITION[toMove] * positionWeight;
-	   
-	        
+	   	        
 	    value += zones[toMove] * positionWeight;	
 		
 		value += 100 * jumpedPieces.size();
@@ -724,11 +782,19 @@ public class CheckerBoard {
 		return value;
 	}
 	
+	/*
+	 * Some situations call for MiniMax to be set independent of the choice 
+	 * being made.
+	 */
 	public void setMiniMax(int value){
 		
 		miniMax = value;
 	}
 	
+	/*
+	 * We always want a new checkerboard representation, not one that refers
+	 * to any other.
+	 */
 	public ArrayList<CheckerPiece> copy(ArrayList<CheckerPiece> inBoard){
 		
 		ArrayList<CheckerPiece> toReturn = new ArrayList<CheckerPiece>();
@@ -736,6 +802,8 @@ public class CheckerBoard {
 		
 		return toReturn;
 	}
+	
+	/*********************** DEBUGGING: PRINTING  *****************************/	
 	
 	public void printTopography(){
 		

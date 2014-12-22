@@ -21,13 +21,16 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		
 		try {
-					
+			
+			/*
+			 * This section instantiates the GUI and sets the correct variables.
+			 */			
 			FXMLLoader fxmlloader = new FXMLLoader();
 			fxmlloader.setLocation(getClass().getResource("GUI.fxml"));
 									
 			GridPane root = fxmlloader.load();//(GridPane)FXMLLoader.load(getClass().getResource("GUI.fxml"));
 			
-			Scene scene = new Scene(root,620,656);
+			Scene scene = new Scene(root,620,620);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
 			primaryStage.setScene(scene);
@@ -37,6 +40,10 @@ public class Main extends Application {
 			gameBoard = (GUIController) fxmlloader.getController();
 			gameBoard.setup(game.currentBoard);
 			
+			/*
+			 * This section runs the game loop and synchronizes display with
+			 * the GUI.
+			 */
 			Task task = new Task<Void>(){
 				
 				@Override
@@ -52,21 +59,18 @@ public class Main extends Application {
 								try{gameBoard.setup(game.nextBoard());}
 								catch(NullPointerException npe){
 									
-									npe.printStackTrace();
 									setGameOver();
 									System.out.println("GAME OVER");
 									game.printHistory();
 								}
 								catch(IllegalArgumentException iae){
 									
-									iae.printStackTrace();
 									setGameOver();
 									System.out.println("GAME OVER");
 									game.printHistory();
 								}
 								catch(IndexOutOfBoundsException ioobe){
 									
-									ioobe.printStackTrace();
 									setGameOver();
 									System.out.println("GAME OVER");
 									game.printHistory();
@@ -87,15 +91,7 @@ public class Main extends Application {
 
 		} catch(Exception e) {e.printStackTrace();}
 	}
-	
-	public void notifyCreation() {
-
-		// All new objects are created on the JavaFX Application Thread, even if
-		// the call to this method came from another thread, such as a timing
-		// thread started by the business logic.
 		
-	}
-	
 	public static void setGameOver(){
 		
 		gameOver = true;
@@ -104,103 +100,11 @@ public class Main extends Application {
 	public static void main(String[] args) throws IOException {
 		
 		launch(args);	
-		
-//		int redWins = 0, blackWins = 0, drawn = 0, iteration = 0, blacks = 0, reds = 0;
-//		
-//		for(int i=0; i<10; i++){
-//			
-//			game = new Game();
-//			gameOver = false;
-//			long startTime = System.currentTimeMillis();
-//			long time;
-//			int turn;
-//			long nodesSearched;
-//		
-//			while(!gameOver){
-//						
-//				try{
-//					
-//					game.nextBoard();
-//					if(game.turn > 100){
-//						
-//						game.currentBoard.evaluate();
-//						blacks = game.currentBoard.blackKings + game.currentBoard.blackPieces;
-//						reds = game.currentBoard.redKings + game.currentBoard.redPieces;
-//						//System.out.println("Blacks: " + blacks + ". Reds: " + reds);
-//						break;
-//					}
-//				}
-//				catch(NullPointerException npe){
-//					
-//					setGameOver();
-//					break;
-//				}
-//				catch(IllegalArgumentException iae){
-//					
-//					setGameOver();
-//					break;
-//				}
-//				catch(IndexOutOfBoundsException ioobe){
-//					
-//					setGameOver();
-//					break;
-//				}	
-//				catch(ArithmeticException ae){
-//					
-//					setGameOver();
-//					break;
-//				}
-//			}	
-//			
-//						
-//			time = System.currentTimeMillis() - startTime;
-//			turn = game.currentBoard.turn;
-//			nodesSearched = game.nodesSearched;
-////			game.currentBoard.printBoard(game.currentBoard.boardPlayer);//printHistory();
-////			System.out.println("GAME OVER");
-//			System.out.println("TOTAL TIME = " + ((System.currentTimeMillis() - startTime)/1000) + "." + (System.currentTimeMillis() - startTime)%100);				
-//			System.out.println("TOTAL MOVES = " + (turn));
-//			System.out.println(iteration++ + ": NODES SEARCHED = " + (nodesSearched = game.nodesSearched));
-////			System.out.println("NODES PER MILLISECOND = " + nodesSearched/time);
-////			System.out.println("NODES PER MOVE = " + nodesSearched/turn);
-//			if(game.winner == 0) redWins++;
-//			if(game.winner == 1) blackWins++;
-//			if(game.winner == 2){ 
-//				
-////				if(blacks > reds) blackWins++;
-////				if(reds > blacks) redWins++;
-////				if(reds == blacks) 
-//				drawn++; System.out.println("DRAW");
-//			}
-////			System.out.print(".");
-//		}
-//		
-//		System.out.println("\nBLACK WINS: " + blackWins);
-//		System.out.println("RED WINS: " + redWins);
-//		System.out.println("DRAWS: " + drawn);
-//	}
-//	
-//	public static void setGameOver(){
-//		
-//		gameOver = true;
-//	}
-//	
-//	public static void printPositions(){
-//		
-//		int k = 0;
-//		for(int i=0; i<8; i++){
-//			for(int j=0; j<8; j++){
-//				if(i%2 == j%2){ 
-//					
-//					System.out.print(k++ + " ");
-//				}
-//				else System.out.print("  ");
-//			}
-//			
-//			System.out.println();
-//		}
 	}
 	
+	/*
+	 * The global variables are shared mainly with the CheckerBoard class.
+	 */
 	public static class globals{
 		
 		static final int[][] BLACK_ADJACENCE = new int[][]{

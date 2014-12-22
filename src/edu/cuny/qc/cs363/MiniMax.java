@@ -6,10 +6,14 @@ public class MiniMax{
 
 	static int nodesSearched;
 	static long startTime = System.currentTimeMillis();
-
+	
+	/*
+	 * Straightforward MiniMax with alpha-beta pruning
+	 */
 	public static int alphabeta(CheckerBoard node, int depth, int alpha, int beta, 
 			boolean maximizingPlayer, int player, int maxtime){
 		
+		/* The one kink is that it needs to stay within a time limit */
 		if(System.currentTimeMillis() - startTime > maxtime) return node.evaluate(); 
 		if(depth == 0 || node.gameOver()) return node.evaluate();
 				
